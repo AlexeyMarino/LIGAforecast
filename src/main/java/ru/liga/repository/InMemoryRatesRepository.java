@@ -5,6 +5,7 @@ import ru.liga.utils.ParseMoneyCsv;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -34,22 +35,18 @@ public class InMemoryRatesRepository implements RatesRepository {
 
     @Override
     public List<Money> getAll(String currencyTitle) {
-        switch (currencyTitle.toLowerCase(Locale.ROOT)) {
-            case "usd":
-                return usd;
-            case "euro":
-                return euro;
-            case "try":
-                return turkey;
-            default:
-                return null;
-        }
+        return switch (currencyTitle.toLowerCase(Locale.ROOT)) {
+            case "usd" -> usd;
+            case "euro" -> euro;
+            case "try" -> turkey;
+            default -> null;
+        };
     }
 
     @Override
     public List<Money> getSevenLast(String currencyTitle) {
         List<Money> all = getAll(currencyTitle);
-        all = all.stream().limit(7).collect(Collectors.toList());
+        all = all.stream().limit(7).sorted(Comparator.comparing(Money::getDate)).collect(Collectors.toList());
         return all;
     }
 

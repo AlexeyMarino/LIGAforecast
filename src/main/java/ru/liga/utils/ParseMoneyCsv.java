@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class ParseMoneyCsv {
                 }
             }
             Money money = new Money();
-            money.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.formatter));
+            money.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.parseFormatter));
             money.setRate(Double.parseDouble(columnList.get(1).replace(",", ".")));
             money.setTitle(columnList.get(2));
             moneyList.add(money);

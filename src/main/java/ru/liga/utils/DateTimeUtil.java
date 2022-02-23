@@ -3,5 +3,6 @@ package ru.liga.utils;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
-    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
+    public static DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
+    public static DateTimeFormatter printFormatter = DateTimeFormatter.ofPattern("E dd.MM.yyyy");
 }
