@@ -1,20 +1,27 @@
 package ru.liga;
 
-import java.util.Scanner;
+import ru.liga.controller.Controller;
+import ru.liga.utils.ControllerSelection;
+import ru.liga.view.Console;
+
 
 /**
  * !!!
  */
 public class App {
+
     public static void main(String[] args) {
+
+        Console console = new Console();
         System.out.println("*currency forecast app*\n");
         boolean run = true;
         while (run) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("terminal=# ");
-            String command = scanner.nextLine();
+
+            String command = console.insertCommand();
             if (command.equals("exit")) run = false;
 
+            Controller controller = ControllerSelection.getController(command);
+            controller.operate();
         }
     }
 

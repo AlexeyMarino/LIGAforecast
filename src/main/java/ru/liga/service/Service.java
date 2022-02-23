@@ -1,7 +1,8 @@
 package ru.liga.service;
 
-public interface Service {
-    Double getDayRate();
+import ru.liga.model.Money;
 
-    Double[] getWeekRate();
+public interface Service {
+
+    Money getDayRate(String currencyTitle);
 }

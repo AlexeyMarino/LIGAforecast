@@ -1,7 +1,6 @@
 package ru.liga.controller;
 
-public class RatesController implements Controller{
-
+public class DefaultController implements Controller{
     @Override
     public void operate() {
 

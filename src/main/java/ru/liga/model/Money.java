@@ -1,32 +1,37 @@
 package ru.liga.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 public class Money {
-    private LocalDateTime dateTime;
-    private Double calories;
+    private LocalDate date;
+    private Double rate;
     private String title;
 
-    public Money(LocalDateTime dateTime, Double calories, String title) {
-        this.dateTime = dateTime;
-        this.calories = calories;
+    public Money(LocalDate dateTime, Double rate, String title) {
+        this.date = dateTime;
+        this.rate = rate;
         this.title = title;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public Money() {
+
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public Double getCalories() {
-        return calories;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    public void setCalories(Double calories) {
-        this.calories = calories;
+    public Double getRate() {
+        return rate;
+    }
+
+    public void setRate(Double rate) {
+        this.rate = rate;
     }
 
     public String getTitle() {
@@ -35,5 +40,14 @@ public class Money {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "date=" + date +
+                ", rate=" + rate +
+                ", title='" + title + '\'' +
+                '}';
     }
 }

@@ -1,8 +1,16 @@
 package ru.liga.repository;
 
-import java.util.Date;
-import java.util.Map;
+import ru.liga.model.Money;
+
+import java.util.List;
+
 
 public interface RatesRepository {
-    Map<Date, Double> getRate();
+    List<Money> getAll();
+
+    List<Money> getAll(String currencyTitle);
+
+    List<Money> getSevenLast(String currencyTitle);
+
+    List<Money> getOneLast(String currencyTitle);
 }
