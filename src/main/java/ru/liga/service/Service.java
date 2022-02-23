@@ -1,12 +1,13 @@
 package ru.liga.service;
 
-import ru.liga.model.Money;
+import ru.liga.model.Rate;
 
 import java.util.List;
 
 public interface Service {
 
-    Money getDayRate(String currencyTitle);
+    Rate getDayRate(String currencyTitle);
 
-    List<Money> getWeekRate(String currencyTitle);
+    List<Rate> getWeekRate(String currencyTitle);
+
 }

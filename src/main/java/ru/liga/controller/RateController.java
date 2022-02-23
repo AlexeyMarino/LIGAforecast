@@ -5,13 +5,17 @@ import ru.liga.view.Console;
 
 import java.util.Locale;
 
-public class RatesController implements Controller {
+/**
+ * Класс контроллера обрабатывающего запросы о прогнозе курсов валют
+ */
+
+public class RateController implements Controller {
 
     private final String[] commands;
     private final Console console;
     private final Service service;
 
-    public RatesController(String[] commands, Console console, Service service) {
+    public RateController(String[] commands, Console console, Service service) {
         this.commands = commands;
         this.console = console;
         this.service = service;
@@ -27,7 +31,7 @@ public class RatesController implements Controller {
 
         switch (commands[1].toLowerCase(Locale.ROOT)) {
             case "usd" -> currency = "usd";
-            case "euro" -> currency = "euro";
+            case "eur" -> currency = "eur";
             case "try" -> currency = "try";
             default -> {
                 console.wrongRateCommand();

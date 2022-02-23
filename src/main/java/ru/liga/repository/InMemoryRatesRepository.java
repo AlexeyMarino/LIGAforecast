@@ -1,7 +1,7 @@
 package ru.liga.repository;
 
-import ru.liga.model.Money;
-import ru.liga.utils.ParseMoneyCsv;
+import ru.liga.model.Rate;
+import ru.liga.utils.ParseRateCsv;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,50 +10,66 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * Инмемори репозиторий для хранения значений курсов валют, загруженых из CSV файлов и работы с этими данными
+ */
+
 public class InMemoryRatesRepository implements RatesRepository {
 
-    static List<Money> usd = new ArrayList<>();
-    static List<Money> euro = new ArrayList<>();
-    static List<Money> turkey = new ArrayList<>();
+    private static List<Rate> usd = new ArrayList<>();
+    private static List<Rate> euro = new ArrayList<>();
+    private static List<Rate> turkey = new ArrayList<>();
 
     static {
         try {
             //хочется слить все в 1 репозиторий и фильтровать по валюте и чему угодно
-            usd = ParseMoneyCsv.parse("src/main/resources/USD_F01_02_2002_T01_02_2022.csv");
-            euro = ParseMoneyCsv.parse("src/main/resources/EUR_F01_02_2002_T01_02_2022.csv");
-            turkey = ParseMoneyCsv.parse("src/main/resources/TRY_F01_02_2002_T01_02_2022.csv");
+            usd = ParseRateCsv.parse("src/main/resources/USD_F01_02_2002_T01_02_2022.csv");
+            euro = ParseRateCsv.parse("src/main/resources/EUR_F01_02_2002_T01_02_2022.csv");
+            turkey = ParseRateCsv.parse("src/main/resources/TRY_F01_02_2002_T01_02_2022.csv");
         } catch (IOException e) {
             System.out.println("Ошибка загрузки данных из файлов CSV"); // заменить методом Console
             e.printStackTrace();
         }
     }
 
-    @Override
-    public List<Money> getAll() {
-        return null;
-    }
 
+    /**
+     * Метод возвращает курсы вылюты за весь период в зависимости от указанной валюты
+     *
+     * @param currencyTitle название валюты
+     */
     @Override
-    public List<Money> getAll(String currencyTitle) {
+    public List<Rate> getAll(String currencyTitle) {
         return switch (currencyTitle.toLowerCase(Locale.ROOT)) {
             case "usd" -> usd;
-            case "euro" -> euro;
+            case "eur" -> euro;
             case "try" -> turkey;
             default -> null;
         };
     }
 
+    /**
+     * Метод возвращает курсы вылюты за последние 7 дней
+     *
+     * @param currencyTitle название валюты
+     */
     @Override
-    public List<Money> getSevenLast(String currencyTitle) {
-        List<Money> all = getAll(currencyTitle);
-        all = all.stream().limit(7).sorted(Comparator.comparing(Money::getDate)).collect(Collectors.toList());
+    public List<Rate> getSevenDaysRates(String currencyTitle) {
+        List<Rate> all = getAll(currencyTitle);
+        all = all.stream().limit(7).sorted(Comparator.comparing(Rate::getDate)).collect(Collectors.toList());
         return all;
     }
 
+    /**
+     * Метод возвращает курс вылюты за последний
+     *
+     * @param currencyTitle название валюты
+     */
+
     @Override
-    public List<Money> getOneLast(String currencyTitle) {
-        List<Money> all = getAll(currencyTitle);
-        all = all.stream().limit(1).collect(Collectors.toList());
+    public List<Rate> getOneDayRate(String currencyTitle) {
+        List<Rate> all = getAll(currencyTitle);
+        all = all.stream().limit(1).sorted(Comparator.comparing(Rate::getDate)).collect(Collectors.toList());
         return all;
     }
 

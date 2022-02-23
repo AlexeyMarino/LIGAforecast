@@ -1,11 +1,15 @@
 package ru.liga.service;
 
 
-import ru.liga.model.Money;
+import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Класс сервиса реализующий алгоритм среднеарифмитического рассчета курса
+ */
 public class AverageArithmeticService implements Service {
 
     private final RatesRepository repository;
@@ -14,24 +18,37 @@ public class AverageArithmeticService implements Service {
         this.repository = repository;
     }
 
+    /**
+     * Расчет курса валюты на завтра, на оснавании 7 предыдущих дней
+     */
     @Override
-    public Money getDayRate(String currencyTitle) {
-        List<Money> rates = repository.getSevenLast(currencyTitle);
-        return getDayRateFromList(currencyTitle, rates, 0);
+    public Rate getDayRate(String currencyTitle) {
+        List<Rate> rates = repository.getSevenDaysRates(currencyTitle);
+        return getDayRateFromList(currencyTitle, rates, 1);
     }
 
+    /**
+     * Расчет курса валюты на неделю, день за днем, на основании 7 предыдущих дней
+     */
     @Override
-    public List<Money> getWeekRate(String currencyTitle) {
-        List<Money> rates = repository.getSevenLast(currencyTitle);
+    public List<Rate> getWeekRate(String currencyTitle) {
+        List<Rate> rates = repository.getSevenDaysRates(currencyTitle);
         for (int i = 0; i < rates.size(); i++) {
-            Money ratesDay = getDayRateFromList(currencyTitle, rates, i);
+            Rate ratesDay = getDayRateFromList(currencyTitle, rates, i+1);
             rates.set(i, ratesDay);
         }
         return rates;
     }
 
-    public Money getDayRateFromList(String currencyTitle, List<Money> rates, int countDate) {
-        Double rateTomorrow = rates.stream().mapToDouble(Money::getRate).average().getAsDouble();
-        return new Money(rates.get(countDate).getDate().plusDays(1), rateTomorrow, currencyTitle);
+    /**
+     * Метод подсчитывающий среднее арифмитическое значение курса, общий для методов
+     * отвечающих за предсказание на неделю и на день
+     *
+     * @param countDate счетчик дней необходимый для корректного указания даты во вновь сформированных объектах Rate
+     *                  значение 1 - при прогнозе на 1 день, 7 - на неделю
+     */
+    public Rate getDayRateFromList(String currencyTitle, List<Rate> rates, int countDate) {
+        Double rateTomorrow = rates.stream().mapToDouble(Rate::getRate).average().getAsDouble();
+        return new Rate(LocalDate.now().plusDays(countDate), rateTomorrow, currencyTitle);
     }
 }

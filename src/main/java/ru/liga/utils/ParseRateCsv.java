@@ -1,6 +1,6 @@
 package ru.liga.utils;
 
-import ru.liga.model.Money;
+import ru.liga.model.Rate;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,11 +9,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParseMoneyCsv {
 
-     public static List<Money> parse(String filePath) throws IOException {
+/**
+ * Класс для парсинга СSV файлов и маппинга этих данных в модель
+ */
+public class ParseRateCsv {
+
+    /**
+     *
+     * @param filePath путь к файлу для парсинга
+     * @throws IOException в случае отсутствия файла или нарушении его структуры будет выброшено исключение
+     */
+    public static List<Rate> parse(String filePath) throws IOException {
         //Загружаем строки из файла
-        List<Money> moneyList = new ArrayList<>();
+        List<Rate> rateList = new ArrayList<>();
         List<String> fileLines = Files.readAllLines(Paths.get(filePath));
         for (int i = 1; i < fileLines.size(); i++) {
             String fileLine = fileLines.get(i);
@@ -28,13 +37,15 @@ public class ParseMoneyCsv {
                     columnList.add(s);
                 }
             }
-            Money money = new Money();
-            money.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.parseFormatter));
-            money.setRate(Double.parseDouble(columnList.get(1).replace(",", ".")));
-            money.setTitle(columnList.get(2));
-            moneyList.add(money);
+
+            //Создаем сущности на основе полученной информации
+            Rate rate = new Rate();
+            rate.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.parseFormatter));
+            rate.setRate(Double.parseDouble(columnList.get(1).replace(",", ".")));
+            rate.setTitle(columnList.get(2));
+            rateList.add(rate);
         }
-        return moneyList;
+        return rateList;
     }
 
     //Проверка является ли колонка частью предыдущей колонки

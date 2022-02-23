@@ -1,20 +1,24 @@
 package ru.liga.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
+/**
+ * Класс описывоющий модель объекта Rate, хранящего информацию о курсе валюты в определенную дату
+ */
 
-public class Money {
+public class Rate {
     private LocalDate date;
     private Double rate;
     private String title;
 
-    public Money(LocalDate dateTime, Double rate, String title) {
+    public Rate(LocalDate dateTime, Double rate, String title) {
         this.date = dateTime;
         this.rate = rate;
         this.title = title;
     }
 
-    public Money() {
+    public Rate() {
 
     }
 
@@ -44,10 +48,23 @@ public class Money {
 
     @Override
     public String toString() {
-        return "Money{" +
+        return "Rate{" +
                 "date=" + date +
                 ", rate=" + rate +
                 ", title='" + title + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rate rate1 = (Rate) o;
+        return date.equals(rate1.date) && rate.equals(rate1.rate) && title.equals(rate1.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, rate, title);
     }
 }
