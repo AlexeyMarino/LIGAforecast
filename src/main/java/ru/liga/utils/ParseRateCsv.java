@@ -3,6 +3,7 @@ package ru.liga.utils;
 import ru.liga.model.Rate;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ public class ParseRateCsv {
             //Создаем сущности на основе полученной информации
             Rate rate = new Rate();
             rate.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.parseFormatter));
-            rate.setRate(Double.parseDouble(columnList.get(1).replace(",", ".")));
+            rate.setRate(BigDecimal.valueOf(Double.parseDouble(columnList.get(1).replace(",", "."))));
             rate.setTitle(columnList.get(2));
             rateList.add(rate);
         }

@@ -4,8 +4,13 @@ package ru.liga.service;
 import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Класс сервиса реализующий алгоритм среднеарифмитического рассчета курса
@@ -48,7 +53,15 @@ public class AverageArithmeticService implements Service {
      *                  значение 1 - при прогнозе на 1 день, 7 - на неделю
      */
     public Rate getDayRateFromList(String currencyTitle, List<Rate> rates, int countDate) {
-        Double rateTomorrow = rates.stream().mapToDouble(Rate::getRate).average().getAsDouble();
-        return new Rate(LocalDate.now().plusDays(countDate), rateTomorrow, currencyTitle);
+        List<BigDecimal> listRateFromSevenDays = rates.stream().map(Rate::getRate).collect(Collectors.toList());
+
+        return new Rate(LocalDate.now().plusDays(countDate), average(listRateFromSevenDays, RoundingMode.FLOOR), currencyTitle);
+    }
+
+    private BigDecimal average(List<BigDecimal> bigDecimals, RoundingMode roundingMode) {
+        BigDecimal sum = bigDecimals.stream()
+                .map(Objects::requireNonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum.divide(new BigDecimal(bigDecimals.size()), roundingMode);
     }
 }

@@ -1,5 +1,6 @@
 package ru.liga.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,10 +10,10 @@ import java.util.Objects;
 
 public class Rate {
     private LocalDate date;
-    private Double rate;
+    private BigDecimal rate;
     private String title;
 
-    public Rate(LocalDate dateTime, Double rate, String title) {
+    public Rate(LocalDate dateTime, BigDecimal rate, String title) {
         this.date = dateTime;
         this.rate = rate;
         this.title = title;
@@ -30,11 +31,11 @@ public class Rate {
         this.date = date;
     }
 
-    public Double getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 
-    public void setRate(Double rate) {
+    public void setRate(BigDecimal rate) {
         this.rate = rate;
     }
 
