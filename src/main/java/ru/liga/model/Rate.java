@@ -11,12 +11,12 @@ import java.util.Objects;
 public class Rate {
     private LocalDate date;
     private BigDecimal rate;
-    private String title;
+    private Currency currency;
 
-    public Rate(LocalDate dateTime, BigDecimal rate, String title) {
+    public Rate(LocalDate dateTime, BigDecimal rate, Currency currency) {
         this.date = dateTime;
         this.rate = rate;
-        this.title = title;
+        this.currency = currency;
     }
 
     public Rate() {
@@ -39,12 +39,12 @@ public class Rate {
         this.rate = rate;
     }
 
-    public String getTitle() {
-        return title;
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Rate {
         return "Rate{" +
                 "date=" + date +
                 ", rate=" + rate +
-                ", title='" + title + '\'' +
+                ", title='" + currency + '\'' +
                 '}';
     }
 
@@ -61,11 +61,11 @@ public class Rate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Rate rate1 = (Rate) o;
-        return date.equals(rate1.date) && rate.equals(rate1.rate) && title.equals(rate1.title);
+        return date.equals(rate1.date) && rate.equals(rate1.rate) && currency.equals(rate1.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, rate, title);
+        return Objects.hash(date, rate, currency);
     }
 }

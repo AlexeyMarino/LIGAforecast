@@ -1,6 +1,7 @@
 package ru.liga.service;
 
 
+import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
 
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 /**
  * Класс сервиса реализующий алгоритм среднеарифмитического рассчета курса
  */
-public class AverageArithmeticService implements Service {
+public class AverageArithmeticService implements ForecastService {
 
     private final RatesRepository repository;
+    private final int DAY = 1;
+    private final int WEEK = 7;
 
     public AverageArithmeticService(RatesRepository repository) {
         this.repository = repository;
@@ -27,35 +31,34 @@ public class AverageArithmeticService implements Service {
      * Расчет курса валюты на завтра, на оснавании 7 предыдущих дней
      */
     @Override
-    public Rate getDayRate(String currencyTitle) {
-        List<Rate> rates = repository.getSevenDaysRates(currencyTitle);
-        return getDayRateFromList(currencyTitle, rates, 1);
+    public Rate getDayRate(Currency currency) {
+        List<Rate> rates = repository.getSevenDaysRates(currency);
+        supplementRates(currency, rates);
+        return getDayRateFromList(currency, rates);
     }
 
-    /**
-     * Расчет курса валюты на неделю, день за днем, на основании 7 предыдущих дней
-     */
-    @Override
-    public List<Rate> getWeekRate(String currencyTitle) {
-        List<Rate> rates = repository.getSevenDaysRates(currencyTitle);
-        for (int i = 0; i < rates.size(); i++) {
-            Rate ratesDay = getDayRateFromList(currencyTitle, rates, i+1);
-            rates.set(i, ratesDay);
+    private void supplementRates(Currency currency, List<Rate> rates) {
+        while (!Objects.equals(rates.get(rates.size()-1).getDate(), LocalDate.now())) {
+            rates.add(getDayRateFromList(currency, rates));
         }
-        return rates;
     }
 
-    /**
-     * Метод подсчитывающий среднее арифмитическое значение курса, общий для методов
-     * отвечающих за предсказание на неделю и на день
-     *
-     * @param countDate счетчик дней необходимый для корректного указания даты во вновь сформированных объектах Rate
-     *                  значение 1 - при прогнозе на 1 день, 7 - на неделю
-     */
-    public Rate getDayRateFromList(String currencyTitle, List<Rate> rates, int countDate) {
-        List<BigDecimal> listRateFromSevenDays = rates.stream().map(Rate::getRate).collect(Collectors.toList());
+    @Override
+    public List<Rate> getWeekRate(Currency currency) {
+        List<Rate> rates = repository.getSevenDaysRates(currency);
+        supplementRates(currency, rates);
+        List<Rate> forecastWeekRate = new ArrayList<>();
+        for (int i = 0; i < 7 ; i++) {
+            Rate ratesDay = getDayRateFromList(currency, rates);
+            rates.add(ratesDay);
+            forecastWeekRate.add(ratesDay);
+        }
+        return forecastWeekRate;
+    }
 
-        return new Rate(LocalDate.now().plusDays(countDate), average(listRateFromSevenDays, RoundingMode.FLOOR), currencyTitle);
+    public Rate getDayRateFromList(Currency currency, List<Rate> rates) {
+        List<BigDecimal> listRateFromSevenDays = rates.stream().sorted(Comparator.comparing(Rate::getDate).reversed()).limit(7).map(Rate::getRate).collect(Collectors.toList());
+        return new Rate(rates.get(rates.size()-1).getDate().plusDays(1), average(listRateFromSevenDays, RoundingMode.FLOOR), currency);
     }
 
     private BigDecimal average(List<BigDecimal> bigDecimals, RoundingMode roundingMode) {

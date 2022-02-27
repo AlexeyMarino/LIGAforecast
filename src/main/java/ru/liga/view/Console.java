@@ -31,10 +31,5 @@ public class Console {
         rates.forEach(this::printDayRate);
     }
 
-    public void wrongRateCommand() {
-        System.out.println("После команды \"rate\" необходимо вводить наименование валюты и период прогноза.");
-        System.out.println("Для просмотра списка доступных команд введите \"help\"");
-    }
-
 
 }

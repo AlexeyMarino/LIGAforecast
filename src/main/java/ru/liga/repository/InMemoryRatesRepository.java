@@ -1,5 +1,6 @@
 package ru.liga.repository;
 
+import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.utils.ParseRateCsv;
 
@@ -7,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +22,6 @@ public class InMemoryRatesRepository implements RatesRepository {
 
     static {
         try {
-            //хочется слить все в 1 репозиторий и фильтровать по валюте и чему угодно
             usd = ParseRateCsv.parse("src/main/resources/USD_F01_02_2002_T01_02_2022.csv");
             euro = ParseRateCsv.parse("src/main/resources/EUR_F01_02_2002_T01_02_2022.csv");
             turkey = ParseRateCsv.parse("src/main/resources/TRY_F01_02_2002_T01_02_2022.csv");
@@ -32,45 +31,38 @@ public class InMemoryRatesRepository implements RatesRepository {
         }
     }
 
-
     /**
      * Метод возвращает курсы вылюты за весь период в зависимости от указанной валюты
      *
-     * @param currencyTitle название валюты
+     * @param currency название валюты
      */
     @Override
-    public List<Rate> getAll(String currencyTitle) {
-        return switch (currencyTitle.toLowerCase(Locale.ROOT)) {
-            case "usd" -> usd;
-            case "eur" -> euro;
-            case "try" -> turkey;
-            default -> null;
+    public List<Rate> getAllRates(Currency currency) {
+        return switch (currency) {
+            case USD -> usd;
+            case EUR -> euro;
+            case TRY -> turkey;
         };
     }
 
     /**
      * Метод возвращает курсы вылюты за последние 7 дней
      *
-     * @param currencyTitle название валюты
+     * @param currency название валюты
      */
+
     @Override
-    public List<Rate> getSevenDaysRates(String currencyTitle) {
-        List<Rate> all = getAll(currencyTitle);
+    public List<Rate> getSevenDaysRates(Currency currency) {
+        List<Rate> all = getAllRates(currency);
         all = all.stream().limit(7).sorted(Comparator.comparing(Rate::getDate)).collect(Collectors.toList());
         return all;
     }
 
-    /**
-     * Метод возвращает курс вылюты за последний
-     *
-     * @param currencyTitle название валюты
-     */
-
     @Override
-    public List<Rate> getOneDayRate(String currencyTitle) {
-        List<Rate> all = getAll(currencyTitle);
-        all = all.stream().limit(1).sorted(Comparator.comparing(Rate::getDate)).collect(Collectors.toList());
-        return all;
+    public void addRate(Rate rate, Currency currency) {
+        List<Rate> all = getAllRates(currency);
+        all.add(rate);
     }
+
 
 }

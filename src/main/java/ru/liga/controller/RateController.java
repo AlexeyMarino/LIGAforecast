@@ -1,6 +1,7 @@
 package ru.liga.controller;
 
-import ru.liga.service.Service;
+import ru.liga.model.Currency;
+import ru.liga.service.ForecastService;
 import ru.liga.view.Console;
 
 import java.util.Locale;
@@ -13,9 +14,9 @@ public class RateController implements Controller {
 
     private final String[] commands;
     private final Console console;
-    private final Service service;
+    private final ForecastService service;
 
-    public RateController(String[] commands, Console console, Service service) {
+    public RateController(String[] commands, Console console, ForecastService service) {
         this.commands = commands;
         this.console = console;
         this.service = service;
@@ -23,26 +24,25 @@ public class RateController implements Controller {
 
     @Override
     public void operate() {
-        String currency;
+        Currency currency;
         if (commands.length < 3) {
-            console.wrongRateCommand();
+            console.printMessage("После команды \"rate\" необходимо вводить наименование валюты и период прогноза.\n" +
+                    "Для просмотра списка доступных команд введите \"help\"");
             return;
         }
 
-        switch (commands[1].toLowerCase(Locale.ROOT)) {
-            case "usd" -> currency = "usd";
-            case "eur" -> currency = "eur";
-            case "try" -> currency = "try";
-            default -> {
-                console.wrongRateCommand();
-                return;
-            }
+        try {
+            currency = Currency.valueOf(commands[1].toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            console.printMessage("После команды \"rate\" необходимо вводить сокращенное наименование волюты (USD, EUR, TRY)");
+            return;
         }
 
         switch (commands[2].toLowerCase(Locale.ROOT)) {
             case "tomorrow" -> console.printDayRate(service.getDayRate(currency));
             case "week" -> console.printWeekRate(service.getWeekRate(currency));
-            default -> console.wrongRateCommand();
+            default -> console.printMessage("После команды \"rate\" и наименования валюты необходимо вводить период прогноза (tomorrow, week");
+
         }
 
     }

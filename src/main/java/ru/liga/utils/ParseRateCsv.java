@@ -1,5 +1,6 @@
 package ru.liga.utils;
 
+import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class ParseRateCsv {
             Rate rate = new Rate();
             rate.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.parseFormatter));
             rate.setRate(BigDecimal.valueOf(Double.parseDouble(columnList.get(1).replace(",", "."))));
-            rate.setTitle(columnList.get(2));
+            rate.setCurrency(getCurrency(columnList.get(2)));
             rateList.add(rate);
         }
         return rateList;
@@ -54,5 +55,16 @@ public class ParseRateCsv {
         String trimText = text.trim();
         //Если в тексте одна ковычка и текст на нее заканчиваеться значит это часть предыдущей колонки
         return trimText.indexOf("\"") == trimText.lastIndexOf("\"") && trimText.endsWith("\"");
+    }
+
+    private static Currency getCurrency(String currencyTitle) {
+        Currency currency;
+        switch (currencyTitle) {
+            case "Доллар США" -> currency = Currency.USD;
+            case "ЕВРО" -> currency = Currency.EUR;
+            case "Турецкая лира" -> currency = Currency.TRY;
+            default -> currency = null;
+        }
+        return currency;
     }
 }
