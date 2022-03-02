@@ -3,10 +3,8 @@ package ru.liga.utils;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +22,13 @@ public class ParseRateCsv {
      */
     public static List<Rate> parse(String filePath) throws IOException {
         //Загружаем строки из файла
+        List<String> fileLines;
         List<Rate> rateList = new ArrayList<>();
-        List<String> fileLines = Files.readAllLines(Paths.get(filePath));
+        try (InputStream in = ParseRateCsv.class.getResourceAsStream(filePath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            fileLines = reader.lines().toList();
+        }
+
         for (int i = 1; i < fileLines.size(); i++) {
             String fileLine = fileLines.get(i);
             String[] splitedText = fileLine.split(";");
@@ -42,7 +45,7 @@ public class ParseRateCsv {
 
             //Создаем сущности на основе полученной информации
             Rate rate = new Rate();
-            rate.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.parseFormatter));
+            rate.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.PARSE_FORMATTER));
             rate.setRate(BigDecimal.valueOf(Double.parseDouble(columnList.get(1).replace(",", "."))));
             rate.setCurrency(getCurrency(columnList.get(2)));
             rateList.add(rate);

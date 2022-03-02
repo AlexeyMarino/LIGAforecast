@@ -23,7 +23,7 @@ public class Console {
     }
 
     public void printDayRate(Rate rate) {
-        printMessage(String.format("%s - %s", rate.getDate().format(DateTimeUtil.printFormatter), String.format("%.2f", rate.getRate())));
+        printMessage(String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_FORMATTER), String.format("%.2f", rate.getRate())));
     }
 
 

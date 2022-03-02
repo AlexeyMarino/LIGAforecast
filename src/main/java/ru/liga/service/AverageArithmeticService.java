@@ -57,7 +57,12 @@ public class AverageArithmeticService implements ForecastService {
     }
 
     public Rate getDayRateFromList(Currency currency, List<Rate> rates) {
-        List<BigDecimal> listRateFromSevenDays = rates.stream().sorted(Comparator.comparing(Rate::getDate).reversed()).limit(7).map(Rate::getRate).collect(Collectors.toList());
+        List<BigDecimal> listRateFromSevenDays = rates
+                .stream()
+                .sorted(Comparator.comparing(Rate::getDate)
+                        .reversed()).limit(7).map(Rate::getRate)
+                .collect(Collectors.toList());
+
         return new Rate(rates.get(rates.size()-1).getDate().plusDays(1), average(listRateFromSevenDays, RoundingMode.FLOOR), currency);
     }
 

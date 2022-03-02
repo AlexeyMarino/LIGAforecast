@@ -22,9 +22,9 @@ public class InMemoryRatesRepository implements RatesRepository {
 
     static {
         try {
-            usd = ParseRateCsv.parse("src/main/resources/USD_F01_02_2002_T01_02_2022.csv");
-            euro = ParseRateCsv.parse("src/main/resources/EUR_F01_02_2002_T01_02_2022.csv");
-            turkey = ParseRateCsv.parse("src/main/resources/TRY_F01_02_2002_T01_02_2022.csv");
+            usd = ParseRateCsv.parse("/USD_F01_02_2002_T01_02_2022.csv");
+            euro = ParseRateCsv.parse("/EUR_F01_02_2002_T01_02_2022.csv");
+            turkey = ParseRateCsv.parse("/TRY_F01_02_2002_T01_02_2022.csv");
         } catch (IOException e) {
             System.out.println("Ошибка загрузки данных из файлов CSV"); // заменить методом Console
             e.printStackTrace();
@@ -54,7 +54,11 @@ public class InMemoryRatesRepository implements RatesRepository {
     @Override
     public List<Rate> getSevenDaysRates(Currency currency) {
         List<Rate> all = getAllRates(currency);
-        all = all.stream().limit(7).sorted(Comparator.comparing(Rate::getDate)).collect(Collectors.toList());
+        all = all
+                .stream()
+                .limit(7)
+                .sorted(Comparator.comparing(Rate::getDate))
+                .collect(Collectors.toList());
         return all;
     }
 

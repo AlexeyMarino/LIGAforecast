@@ -10,9 +10,10 @@ import ru.liga.view.Console;
 
 
 /**
- * 
+ *
  */
 public class App {
+
 
     public static void main(String[] args) {
         RatesRepository repository = new InMemoryRatesRepository();
