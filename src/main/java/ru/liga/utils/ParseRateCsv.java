@@ -28,7 +28,7 @@ public class ParseRateCsv {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             fileLines = reader.lines().toList();
         }
-
+        LocalDate lastDate = null;
         for (int i = 1; i < fileLines.size(); i++) {
             String fileLine = fileLines.get(i);
             String[] splitedText = fileLine.split(";");
@@ -44,11 +44,17 @@ public class ParseRateCsv {
             }
 
             //Создаем сущности на основе полученной информации
-            Rate rate = new Rate();
-            rate.setDate(LocalDate.parse(columnList.get(0), DateTimeUtil.PARSE_FORMATTER));
-            rate.setRate(BigDecimal.valueOf(Double.parseDouble(columnList.get(1).replace(",", "."))));
-            rate.setCurrency(getCurrency(columnList.get(2)));
-            rateList.add(rate);
+            int nominal = (int) Double.parseDouble(columnList.get(0));
+            LocalDate currentDate = LocalDate.parse(columnList.get(1), DateTimeUtil.PARSE_FORMATTER);
+            BigDecimal currentRate = BigDecimal.valueOf(Double.parseDouble(columnList.get(2).replace(",", ".").replace("\"", "")));
+            Currency currency = getCurrency(columnList.get(3));
+            while (lastDate != null && !currentDate.equals(lastDate.minusDays(1))) {
+                lastDate = lastDate.minusDays(1);
+                Rate rate = new Rate(nominal, lastDate, currentRate, currency);
+                rateList.add(rate);
+            }
+            rateList.add(new Rate(nominal, currentDate, currentRate, currency));
+            lastDate = currentDate;
         }
         return rateList;
     }
@@ -66,8 +72,12 @@ public class ParseRateCsv {
             case "Доллар США" -> currency = Currency.USD;
             case "ЕВРО" -> currency = Currency.EUR;
             case "Турецкая лира" -> currency = Currency.TRY;
+            case "Армянский драм" -> currency = Currency.AMD;
+            case "Болгарский лев" -> currency = Currency.BGN;
             default -> currency = null;
         }
         return currency;
     }
+
+
 }

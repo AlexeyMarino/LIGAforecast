@@ -19,16 +19,21 @@ public class InMemoryRatesRepository implements RatesRepository {
     private static List<Rate> usd = new ArrayList<>();
     private static List<Rate> euro = new ArrayList<>();
     private static List<Rate> turkey = new ArrayList<>();
+    private static List<Rate> amd = new ArrayList<>();
+    private static List<Rate> bgn = new ArrayList<>();
 
     static {
         try {
-            usd = ParseRateCsv.parse("/USD_F01_02_2002_T01_02_2022.csv");
-            euro = ParseRateCsv.parse("/EUR_F01_02_2002_T01_02_2022.csv");
-            turkey = ParseRateCsv.parse("/TRY_F01_02_2002_T01_02_2022.csv");
+            usd = ParseRateCsv.parse("/USD_F01_02_2005_T05_03_2022.csv");
+            euro = ParseRateCsv.parse("/EUR_F01_02_2005_T05_03_2022.csv");
+            turkey = ParseRateCsv.parse("/TRY_F01_02_2005_T05_03_2022.csv");
+            amd = ParseRateCsv.parse("/AMD_F01_02_2005_T05_03_2022.csv");
+            bgn = ParseRateCsv.parse("/BGN_F01_02_2005_T05_03_2022.csv");
         } catch (IOException e) {
             System.out.println("Ошибка загрузки данных из файлов CSV"); // заменить методом Console
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -42,6 +47,8 @@ public class InMemoryRatesRepository implements RatesRepository {
             case USD -> usd;
             case EUR -> euro;
             case TRY -> turkey;
+            case AMD -> amd;
+            case BGN -> bgn;
         };
     }
 

@@ -9,11 +9,13 @@ import java.util.Objects;
  */
 
 public class Rate {
+    private int nominal;
     private LocalDate date;
     private BigDecimal rate;
     private Currency currency;
 
-    public Rate(LocalDate dateTime, BigDecimal rate, Currency currency) {
+    public Rate(int nominal, LocalDate dateTime, BigDecimal rate, Currency currency) {
+        this.nominal = nominal;
         this.date = dateTime;
         this.rate = rate;
         this.currency = currency;
@@ -21,6 +23,14 @@ public class Rate {
 
     public Rate() {
 
+    }
+
+    public int getNominal() {
+        return nominal;
+    }
+
+    public void setNominal(int nominal) {
+        this.nominal = nominal;
     }
 
     public LocalDate getDate() {

@@ -63,7 +63,7 @@ public class AverageArithmeticService implements ForecastService {
                         .reversed()).limit(7).map(Rate::getRate)
                 .collect(Collectors.toList());
 
-        return new Rate(rates.get(rates.size()-1).getDate().plusDays(1), average(listRateFromSevenDays, RoundingMode.FLOOR), currency);
+        return new Rate(rates.get(rates.size()-1).getNominal(),rates.get(rates.size()-1).getDate().plusDays(1), average(listRateFromSevenDays, RoundingMode.FLOOR), currency);
     }
 
     private BigDecimal average(List<BigDecimal> bigDecimals, RoundingMode roundingMode) {
