@@ -1,6 +1,7 @@
 package ru.liga.view;
 
 import ru.liga.model.Rate;
+import ru.liga.model.command.Command;
 import ru.liga.utils.DateTimeUtil;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class Console implements View {
     }
 
     @Override
-    public void printMessage(Object answer, Long chatId) {
+    public void printMessage(Object answer, Long chatId, Command command) {
 
     }
 

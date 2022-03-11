@@ -1,6 +1,7 @@
 package ru.liga.controller;
 
 import ru.liga.model.Algorithm;
+import ru.liga.model.Currency;
 import ru.liga.model.Period;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
@@ -10,8 +11,9 @@ import ru.liga.service.ActualAlgorithmService;
 import ru.liga.service.ForecastService;
 import ru.liga.service.LinearRegressionForecastService;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Класс контроллера обрабатывающего запросы о прогнозе курсов валют
@@ -58,14 +60,15 @@ public class RateController implements Controller {
     }
 
     private Object getRatesFromPeriod(ForecastService service, int period) {
+        Map<Currency, List<Rate>> ratesMap = new HashMap<>();
         if (command.getCurrency().size() == 1) {
-            return service.getRates(command.getCurrency().get(0), period);
+            return ratesMap.put(command.getCurrency().get(0), service.getRates(command.getCurrency().get(0), period));
         }
+
         if (command.getCurrency().size() > 1) {
-            List<List<Rate>> ratesLists = new ArrayList<>();
             for (int i = 0; i < command.getCurrency().size(); i++)
-                ratesLists.add(service.getRates(command.getCurrency().get(i), period));
-            return ratesLists;
+                ratesMap.put(command.getCurrency().get(i), service.getRates(command.getCurrency().get(i), period));
+            return ratesMap;
         }
         return "Неизвестная ошибка (";
     }

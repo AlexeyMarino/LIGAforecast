@@ -26,8 +26,7 @@ public class App {
             Long chatId = message.getChatId();
             Controller controller = ControllerSelection.getController(command, repository);
             Object answer = controller.operate();
-            view.printMessage(answer, chatId);
-
+            view.printMessage(answer, chatId, command);
         }
     }
 
