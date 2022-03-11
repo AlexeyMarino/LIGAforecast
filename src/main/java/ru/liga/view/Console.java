@@ -6,7 +6,7 @@ import ru.liga.utils.DateTimeUtil;
 import java.util.List;
 import java.util.Scanner;
 
-public class Console {
+public class Console implements View {
     private final Scanner scanner;
 
     public Console() {
@@ -22,13 +22,19 @@ public class Console {
         System.out.println(text);
     }
 
-    public void printDayRate(Rate rate) {
+
+    private void printDayRate(Rate rate) {
         printMessage(String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_FORMATTER), String.format("%.2f", rate.getRate())));
     }
 
 
-    public void printWeekRate(List<Rate> rates) {
+    private void printRates(List<Rate> rates) {
         rates.forEach(this::printDayRate);
+    }
+
+    @Override
+    public void printMessage(Object answer, Long chatId) {
+
     }
 
 

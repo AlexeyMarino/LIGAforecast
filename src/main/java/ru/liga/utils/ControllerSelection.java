@@ -4,24 +4,22 @@ import ru.liga.controller.Controller;
 import ru.liga.controller.DefaultController;
 import ru.liga.controller.RateController;
 import ru.liga.controller.SystemController;
-import ru.liga.service.ForecastService;
-import ru.liga.view.Console;
-
-import java.util.Locale;
+import ru.liga.model.command.Command;
+import ru.liga.repository.RatesRepository;
 
 /**
  * Класс отвечающий за выбор контроллера, который будет работать с поступившей командой
+ *
  * @see ru.liga.App
  */
 public class ControllerSelection {
 
-    public static Controller getController(String command, ForecastService service, Console console) {
-        String[] commands = command.split(" ");
+    public static Controller getController(Command command, RatesRepository repository) {
 
-        return switch (commands[0].toLowerCase(Locale.ROOT)) {
-            case "help", "contacts", "exit" -> new SystemController(commands[0], console);
-            case "rate" -> new RateController(commands, console, service);
-            default -> new DefaultController(command, console);
+        return switch (command.getCommandName()) {
+            case HELP, CONTACTS -> new SystemController(command);
+            case RATE -> new RateController(command, repository);
+            default -> new DefaultController(command);
         };
     }
 }

@@ -3,11 +3,15 @@ package ru.liga.utils;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -16,7 +20,6 @@ import java.util.List;
 public class ParseRateCsv {
 
     /**
-     *
      * @param filePath путь к файлу для парсинга
      * @throws IOException в случае отсутствия файла или нарушении его структуры будет выброшено исключение
      */
@@ -25,7 +28,7 @@ public class ParseRateCsv {
         List<String> fileLines;
         List<Rate> rateList = new ArrayList<>();
         try (InputStream in = ParseRateCsv.class.getResourceAsStream(filePath);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(in)))) {
             fileLines = reader.lines().toList();
         }
         LocalDate lastDate = null;

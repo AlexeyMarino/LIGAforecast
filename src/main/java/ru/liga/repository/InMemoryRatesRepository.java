@@ -5,9 +5,10 @@ import ru.liga.model.Rate;
 import ru.liga.utils.ParseRateCsv;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -16,19 +17,16 @@ import java.util.stream.Collectors;
 
 public class InMemoryRatesRepository implements RatesRepository {
 
-    private static List<Rate> usd = new ArrayList<>();
-    private static List<Rate> euro = new ArrayList<>();
-    private static List<Rate> turkey = new ArrayList<>();
-    private static List<Rate> amd = new ArrayList<>();
-    private static List<Rate> bgn = new ArrayList<>();
+    private static final Map<Currency, List<Rate>> repository = new HashMap<>();
+
 
     static {
         try {
-            usd = ParseRateCsv.parse("/USD_F01_02_2005_T05_03_2022.csv");
-            euro = ParseRateCsv.parse("/EUR_F01_02_2005_T05_03_2022.csv");
-            turkey = ParseRateCsv.parse("/TRY_F01_02_2005_T05_03_2022.csv");
-            amd = ParseRateCsv.parse("/AMD_F01_02_2005_T05_03_2022.csv");
-            bgn = ParseRateCsv.parse("/BGN_F01_02_2005_T05_03_2022.csv");
+            repository.put(Currency.USD, ParseRateCsv.parse("/USD_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.EUR, ParseRateCsv.parse("/EUR_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.TRY, ParseRateCsv.parse("/TRY_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.AMD, ParseRateCsv.parse("/AMD_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.BGN, ParseRateCsv.parse("/BGN_F01_02_2005_T05_03_2022.csv"));
         } catch (IOException e) {
             System.out.println("Ошибка загрузки данных из файлов CSV"); // заменить методом Console
             e.printStackTrace();
@@ -36,34 +34,18 @@ public class InMemoryRatesRepository implements RatesRepository {
 
     }
 
-    /**
-     * Метод возвращает курсы вылюты за весь период в зависимости от указанной валюты
-     *
-     * @param currency название валюты
-     */
     @Override
     public List<Rate> getAllRates(Currency currency) {
-        return switch (currency) {
-            case USD -> usd;
-            case EUR -> euro;
-            case TRY -> turkey;
-            case AMD -> amd;
-            case BGN -> bgn;
-        };
+        return repository.get(currency);
     }
 
-    /**
-     * Метод возвращает курсы вылюты за последние 7 дней
-     *
-     * @param currency название валюты
-     */
 
     @Override
-    public List<Rate> getSevenDaysRates(Currency currency) {
+    public List<Rate> getRates(Currency currency, int numberOfDays) {
         List<Rate> all = getAllRates(currency);
         all = all
                 .stream()
-                .limit(7)
+                .limit(numberOfDays)
                 .sorted(Comparator.comparing(Rate::getDate))
                 .collect(Collectors.toList());
         return all;
