@@ -3,5 +3,7 @@ package ru.liga.model;
 public enum Currency {
     USD,
     EUR,
-    TRY
+    TRY,
+    AMD,
+    BGN
 }

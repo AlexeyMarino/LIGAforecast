@@ -1,22 +1,21 @@
 package ru.liga.controller;
 
-import ru.liga.view.Console;
+import ru.liga.model.command.Command;
 
 /**
  * Класс контроллера для обработки команд непредусмотрееных приложением
  */
 public class DefaultController implements Controller {
-    private final Console console;
-    private final String command;
+    private final Command command;
 
-    public DefaultController(String command, Console console) {
+    public DefaultController(Command command) {
         this.command = command;
-        this.console = console;
     }
 
     @Override
-    public void operate() {
-        console.printMessage("Введена неверная команда: " + "\"" + command + "\"");
-        console.printMessage("Для просмотра списка доступных команд введите \"help\"");
+    public Object operate() {
+        return command.getText();
     }
+
+
 }

@@ -3,11 +3,13 @@ package ru.liga.service;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ForecastService {
 
-    Rate getDayRate(Currency currency);
+    List<Rate> getRates(Currency currency, int Period);
 
-    List<Rate> getWeekRate(Currency currency);
+    List<Rate> getDateRate(Currency currency, LocalDate date);
+
 }

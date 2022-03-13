@@ -1,27 +1,23 @@
 package ru.liga.controller;
 
-import ru.liga.view.Console;
-
-import java.util.Locale;
+import ru.liga.model.command.Command;
 
 /**
  * Класс контроллера обрабатывающий команды системного характера
  */
 
 public class SystemController implements Controller {
-    private final Console console;
-    private final String command;
+    private final Command command;
 
-    public SystemController(String command, Console console) {
+    public SystemController(Command command) {
         this.command = command;
-        this.console = console;
     }
 
+
     @Override
-    public void operate() {
-        switch (command.toLowerCase(Locale.ROOT)) {
-            case "help" -> console.printMessage("""
-                                        
+    public Object operate() {
+        return switch (command.getCommandName()) {
+            case HELP -> """                
                     Cписок доступных комманд:
                         help     - помощь
                         rate     - прогноз курсов валют, с этой командой необходимо указывать валюту (USD, EUR, TRY),
@@ -29,12 +25,11 @@ public class SystemController implements Controller {
                                        параметры команды необходимо указывать через пробел (пример: rate TRY tomorrow)
                         exit     - завершение программы
                         contacts - обратная связь
-                        """);
-            case "contacts" -> console.printMessage("С вопросами, пожеланиями, информацией об ошибках просьба обращаться к @MarinoSpb");
-            case "exit" -> {
-                console.printMessage("Application stopped");
-                System.exit(0);
-            }
-        }
+                        """;
+            case CONTACTS -> "С вопросами, пожеланиями, информацией об ошибках просьба обращаться к @MarinoSpb";
+            default -> "Упс";
+        };
     }
+
+
 }
