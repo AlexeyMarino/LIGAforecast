@@ -1,5 +1,6 @@
 package ru.liga.model.command;
 
+import lombok.*;
 import ru.liga.model.Algorithm;
 import ru.liga.model.Currency;
 import ru.liga.model.Output;
@@ -8,14 +9,16 @@ import ru.liga.model.Period;
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
 public class RateCommand implements Command {
-    private final CommandName name;
-    private final List<Currency> currency;
-    private final LocalDate date;
-    private final Period period;
-    private final Algorithm algorithm;
-    private final Output output;
-
+    private CommandName name;
+    private List<Currency> currency;
+    private LocalDate date;
+    private Period period;
+    private Algorithm algorithm;
+    private Output output;
 
     public RateCommand(List<Currency> currency, LocalDate date, Period period, Algorithm algorithm, Output output) {
         this.name = CommandName.RATE;
@@ -26,6 +29,10 @@ public class RateCommand implements Command {
         this.output = output;
     }
 
+    public RateCommand() {
+        this.name = CommandName.RATE;
+    }
+
     @Override
     public CommandName getCommandName() {
         return name;
@@ -34,37 +41,5 @@ public class RateCommand implements Command {
     @Override
     public String getText() {
         return null;
-    }
-
-    public List<Currency> getCurrency() {
-        return currency;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public Period getPeriod() {
-        return period;
-    }
-
-    public Algorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public Output getOutput() {
-        return output;
-    }
-
-    @Override
-    public String toString() {
-        return "RateCommand{" +
-                "name=" + name +
-                ", currency=" + currency +
-                ", date=" + date +
-                ", period=" + period +
-                ", algorithm=" + algorithm +
-                ", output=" + output +
-                '}';
     }
 }

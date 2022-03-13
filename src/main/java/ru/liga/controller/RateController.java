@@ -31,46 +31,32 @@ public class RateController implements Controller {
     @Override
     public Object operate() {
         ForecastService service = getService(command.getAlgorithm());
-
-        if (command.getDate() != null) {
-            return service.getDateRate(command.getCurrency().get(0), command.getDate());
-        }
-
         if (command.getPeriod() != null) {
             if (command.getPeriod() == Period.MONTH) {
                 return getRatesFromPeriod(service, 30);
-            }
-            if (command.getPeriod() == Period.WEEK) {
+            } else if (command.getPeriod() == Period.WEEK) {
                 return getRatesFromPeriod(service, 7);
             }
         }
-        return "Неизвестная ошибка (";
+        Map<Currency, List<Rate>> ratesMap = new HashMap<>();
+        ratesMap.put(command.getCurrency().get(0), service.getDateRate(command.getCurrency().get(0), command.getDate()));
+        return ratesMap;
     }
 
 
     private ForecastService getService(Algorithm algorithm) {
         if (algorithm == Algorithm.LR) {
             return new LinearRegressionForecastService(repository);
-        }
-
-        if (algorithm == Algorithm.ACTUAL) {
+        } else if (algorithm == Algorithm.ACTUAL) {
             return new ActualAlgorithmService(repository);
-        }
-        return new LinearRegressionForecastService(repository);
+        } else return new LinearRegressionForecastService(repository);
     }
 
     private Object getRatesFromPeriod(ForecastService service, int period) {
         Map<Currency, List<Rate>> ratesMap = new HashMap<>();
-        if (command.getCurrency().size() == 1) {
-            return ratesMap.put(command.getCurrency().get(0), service.getRates(command.getCurrency().get(0), period));
-        }
-
-        if (command.getCurrency().size() > 1) {
             for (int i = 0; i < command.getCurrency().size(); i++)
                 ratesMap.put(command.getCurrency().get(i), service.getRates(command.getCurrency().get(i), period));
             return ratesMap;
-        }
-        return "Неизвестная ошибка (";
     }
 
 

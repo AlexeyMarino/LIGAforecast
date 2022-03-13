@@ -3,6 +3,7 @@ package ru.liga.view;
 import com.github.sh0nk.matplotlib4j.NumpyUtils;
 import com.github.sh0nk.matplotlib4j.Plot;
 import com.github.sh0nk.matplotlib4j.PythonExecutionException;
+import lombok.AllArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -20,15 +21,13 @@ import ru.liga.utils.DateTimeUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
 public class TelegramView implements View {
     private final Bot bot;
-
-    public TelegramView(Bot bot) {
-        this.bot = bot;
-    }
 
     public Message getMessage() {
         Update update = null;
@@ -37,6 +36,7 @@ public class TelegramView implements View {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        assert update != null;
         return update.getMessage();
     }
 
@@ -52,19 +52,17 @@ public class TelegramView implements View {
         RateCommand rateCommand = (RateCommand) command;
 
 
-        if (answer instanceof Map<?, ?>) {
+        if (answer instanceof Map<?,?>) {
             Map<Currency, List<Rate>> mapRates = (Map<Currency, List<Rate>>) answer;
 
-            if (((RateCommand) command).getOutput() == Output.LIST) {
-                stringAnswer = printRates(mapRates, rateCommand.getCurrency().get(0));
-                sendText(stringAnswer, chatId);
-                return;
-            }
             if (((RateCommand) command).getOutput() == Output.GRAPH) {
                 int days = rateCommand.getPeriod() == Period.MONTH ? 30 : 7;
                 sendPhoto(getGraph(mapRates, days), chatId);
             }
-
+            else {
+                stringAnswer = printRates(mapRates, rateCommand.getCurrency().get(0));
+                sendText(stringAnswer, chatId);
+            }
         }
     }
 

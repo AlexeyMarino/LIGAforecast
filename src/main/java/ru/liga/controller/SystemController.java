@@ -27,7 +27,7 @@ public class SystemController implements Controller {
                         contacts - обратная связь
                         """;
             case CONTACTS -> "С вопросами, пожеланиями, информацией об ошибках просьба обращаться к @MarinoSpb";
-            default -> "Упс";
+            default -> throw new IllegalStateException("Unexpected value: " + command.getCommandName());
         };
     }
 

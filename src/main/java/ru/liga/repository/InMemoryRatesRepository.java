@@ -42,13 +42,10 @@ public class InMemoryRatesRepository implements RatesRepository {
 
     @Override
     public List<Rate> getRates(Currency currency, int numberOfDays) {
-        List<Rate> all = getAllRates(currency);
-        all = all
-                .stream()
+        return getAllRates(currency).stream()
                 .limit(numberOfDays)
                 .sorted(Comparator.comparing(Rate::getDate))
                 .collect(Collectors.toList());
-        return all;
     }
 
     @Override

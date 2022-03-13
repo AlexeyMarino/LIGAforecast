@@ -1,5 +1,6 @@
 package ru.liga.service;
 
+import lombok.AllArgsConstructor;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
@@ -7,13 +8,10 @@ import ru.liga.repository.RatesRepository;
 import java.time.LocalDate;
 import java.util.List;
 
+@AllArgsConstructor
 public class ActualAlgorithmService implements ForecastService {
 
     private final RatesRepository repository;
-
-    public ActualAlgorithmService(RatesRepository repository) {
-        this.repository = repository;
-    }
 
 
     public Rate getDayRate(Currency currency) {

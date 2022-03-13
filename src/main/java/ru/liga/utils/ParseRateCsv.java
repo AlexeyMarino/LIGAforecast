@@ -8,9 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -35,7 +38,7 @@ public class ParseRateCsv {
         for (int i = 1; i < fileLines.size(); i++) {
             String fileLine = fileLines.get(i);
             String[] splitedText = fileLine.split(";");
-            ArrayList<String> columnList = new ArrayList<>();
+            List<String> columnList = new ArrayList<>();
             for (String s : splitedText) {
                 //Если колонка начинается на кавычки или заканчиваеться на кавычки
                 if (IsColumnPart(s)) {
@@ -49,7 +52,12 @@ public class ParseRateCsv {
             //Создаем сущности на основе полученной информации
             int nominal = (int) Double.parseDouble(columnList.get(0));
             LocalDate currentDate = LocalDate.parse(columnList.get(1), DateTimeUtil.PARSE_FORMATTER);
-            BigDecimal currentRate = BigDecimal.valueOf(Double.parseDouble(columnList.get(2).replace(",", ".").replace("\"", "")));
+            BigDecimal currentRate = null;
+            try {
+                currentRate = BigDecimal.valueOf(NumberFormat.getInstance(new Locale("RU")).parse(columnList.get(2).replace("\"", "")).doubleValue());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             Currency currency = getCurrency(columnList.get(3));
             while (lastDate != null && !currentDate.equals(lastDate.minusDays(1))) {
                 lastDate = lastDate.minusDays(1);

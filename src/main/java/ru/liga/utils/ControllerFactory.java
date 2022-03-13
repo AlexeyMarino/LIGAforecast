@@ -12,7 +12,7 @@ import ru.liga.repository.RatesRepository;
  *
  * @see ru.liga.App
  */
-public class ControllerSelection {
+public class ControllerFactory {
 
     public static Controller getController(Command command, RatesRepository repository) {
 

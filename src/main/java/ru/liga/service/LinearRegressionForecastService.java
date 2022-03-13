@@ -1,5 +1,7 @@
 package ru.liga.service;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
@@ -11,13 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 public class LinearRegressionForecastService implements ForecastService {
+    @NonNull
     private final RatesRepository repository;
     private final int MONTH = 30;
-
-    public LinearRegressionForecastService(RatesRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public List<Rate> getRates(Currency currency, int period) {
