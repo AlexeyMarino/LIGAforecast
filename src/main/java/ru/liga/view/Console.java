@@ -1,5 +1,6 @@
 package ru.liga.view;
 
+import ru.liga.model.Answer;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
 import ru.liga.utils.DateTimeUtil;
@@ -17,6 +18,11 @@ public class Console implements View {
     public String insertCommand() {
         System.out.print("Введите команду: ");
         return scanner.nextLine();
+    }
+
+    @Override
+    public void printMessage(Answer answer, Long chatId, Command command) {
+
     }
 
     public void printMessage(String text) {

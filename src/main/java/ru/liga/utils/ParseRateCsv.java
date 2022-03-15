@@ -11,10 +11,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -29,17 +26,23 @@ public class ParseRateCsv {
     public static List<Rate> parse(String filePath) throws IOException {
         //Загружаем строки из файла
         List<String> fileLines;
-        List<Rate> rateList = new ArrayList<>();
         try (InputStream in = ParseRateCsv.class.getResourceAsStream(filePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(in)))) {
             fileLines = reader.lines().toList();
         }
         LocalDate lastDate = null;
+
+        List<String> headlines = Arrays.stream(fileLines.get(0).split(";")).toList();
+        int nominal = headlines.indexOf("nominal");
+        int data = headlines.indexOf("data");
+        int curs = headlines.indexOf("curs");
+        int cdx = headlines.indexOf("cdx");
+        List<Rate> rateList = new ArrayList<>();
         for (int i = 1; i < fileLines.size(); i++) {
             String fileLine = fileLines.get(i);
-            String[] splitedText = fileLine.split(";");
+            String[] splitText = fileLine.split(";");
             List<String> columnList = new ArrayList<>();
-            for (String s : splitedText) {
+            for (String s : splitText) {
                 //Если колонка начинается на кавычки или заканчиваеться на кавычки
                 if (IsColumnPart(s)) {
                     String lastText = columnList.get(columnList.size() - 1);
@@ -50,15 +53,17 @@ public class ParseRateCsv {
             }
 
             //Создаем сущности на основе полученной информации
-            int nominal = (int) Double.parseDouble(columnList.get(0));
-            LocalDate currentDate = LocalDate.parse(columnList.get(1), DateTimeUtil.PARSE_FORMATTER);
+            int currentNominal = (int) Double.parseDouble(columnList.get(nominal));
+            LocalDate currentDate = LocalDate.parse(columnList.get(data), DateTimeUtil.PARSE_FORMATTER);
             BigDecimal currentRate = null;
             try {
-                currentRate = BigDecimal.valueOf(NumberFormat.getInstance(new Locale("RU")).parse(columnList.get(2).replace("\"", "")).doubleValue());
+                currentRate = BigDecimal.valueOf(NumberFormat.getInstance(new Locale("RU")).parse(columnList.get(curs).replace("\"", "")).doubleValue());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Currency currency = getCurrency(columnList.get(3));
+            Currency currency = getCurrency(columnList.get(cdx));
+
+
             while (lastDate != null && !currentDate.equals(lastDate.minusDays(1))) {
                 lastDate = lastDate.minusDays(1);
                 Rate rate = new Rate(nominal, lastDate, currentRate, currency);
