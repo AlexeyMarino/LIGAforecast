@@ -28,7 +28,7 @@ public class CommandBuilder {
 
 
             if (currencies.size() > 1 && output.equals(Output.LIST))
-                throw new InvalidCommandException(ILLEGAL_LIST_OUTPUT.getMessage());
+                throw new IllegalOutputException(ILLEGAL_LIST_OUTPUT.getMessage());
 
             if (!period.isPeriod() && output.equals(Output.GRAPH))
                 throw new InvalidCommandException(ILLEGAL_GRAPH_OUTPUT.getMessage());

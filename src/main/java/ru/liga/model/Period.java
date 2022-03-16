@@ -1,12 +1,10 @@
 package ru.liga.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 public class Period {
 
     private boolean period;

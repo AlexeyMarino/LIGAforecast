@@ -12,7 +12,6 @@ import ru.liga.model.Period;
 import java.util.List;
 
 @Getter
-@Setter
 @ToString
 @AllArgsConstructor
 public class Command {

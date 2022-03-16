@@ -35,7 +35,6 @@ public class App {
             } catch (BaseException e) {
                 view.sendText(e.getMessage(), chatId);
             }
-
         }
     }
 

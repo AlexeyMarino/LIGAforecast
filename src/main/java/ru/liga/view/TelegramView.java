@@ -83,7 +83,9 @@ public class TelegramView implements View {
     }
 
     public File getGraph(Map<Currency, List<Rate>> ratesMap) {
+
         int days = ratesMap.values().stream().findFirst().get().size();
+
         List<Double> x = NumpyUtils.linspace(1, days, days);
         Plot plt = Plot.create();
         for (List<Rate> currencyRates : ratesMap.values()) {
@@ -91,6 +93,7 @@ public class TelegramView implements View {
                     .map(r -> r.getRate().doubleValue()).toList();
             plt.plot().add(x, rates);
         }
+       //  plt.title();
         plt.xlabel("Дата");
         plt.ylabel("Курс валюты");
         plt.savefig("src/main/resources/graph.png").dpi(200);
@@ -102,14 +105,8 @@ public class TelegramView implements View {
         return new File("src/main/resources/graph.png");
     }
 
-    @Override
-    public void printMessage(String text) {
 
-    }
 
-    @Override
-    public void printMessage(Object answer, Long chatId, Command command) {
 
-    }
 
 }

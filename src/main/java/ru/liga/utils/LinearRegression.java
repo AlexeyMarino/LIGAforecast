@@ -5,8 +5,8 @@ import java.util.List;
 
 public class LinearRegression {
     private final double intercept, slope;
-    private final double r2;
-    private final double svar0, svar1;
+    private final double residual;
+    private final double firstStatistic, secondStatistic;
 
     /**
      * Performs a linear regression on the data points {@code (y[i], x[i])}.
@@ -17,7 +17,8 @@ public class LinearRegression {
      */
     public LinearRegression(List<Double> x, List<Double> y) {
         if (x.size() != y.size()) {
-            throw new IllegalArgumentException("array lengths are not equal");
+            throw new IllegalArgumentException("array le" +
+                    "ngths are not equal");
         }
         int n = x.size();
 
@@ -51,10 +52,10 @@ public class LinearRegression {
         }
 
         int degreesOfFreedom = n - 2;
-        r2 = ssr / yybar;
-        double svar = rss / degreesOfFreedom;
-        svar1 = svar / xxbar;
-        svar0 = svar / n + xbar * xbar * svar1;
+        residual = ssr / yybar;
+        double statistic = rss / degreesOfFreedom;
+        secondStatistic = statistic / xxbar;
+        firstStatistic = statistic / n + xbar * xbar * secondStatistic;
     }
 
     /**
@@ -82,7 +83,7 @@ public class LinearRegression {
      * which is a real number between 0 and 1
      */
     public double R2() {
-        return r2;
+        return residual;
     }
 
     /**
@@ -91,7 +92,7 @@ public class LinearRegression {
      * @return the standard error of the estimate for the intercept
      */
     public double interceptStdErr() {
-        return Math.sqrt(svar0);
+        return Math.sqrt(firstStatistic);
     }
 
     /**
@@ -100,7 +101,7 @@ public class LinearRegression {
      * @return the standard error of the estimate for the slope
      */
     public double slopeStdErr() {
-        return Math.sqrt(svar1);
+        return Math.sqrt(secondStatistic);
     }
 
     /**

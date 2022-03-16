@@ -9,8 +9,12 @@ import static ru.liga.exception.ExceptionMessage.INVALID_COMMAND;
 
 public class CommandParser {
     public Map<String, String> parse(String text) {
+        if(text.isEmpty()) {
+            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
+        }
+
         String[] splitText = text.split(" ");
-        if (splitText.length % 2 != 0 && splitText.length != 1) {
+        if (splitText.length % 2 != 0 && splitText.length !=1 ) {
             throw new InvalidCommandException(INVALID_COMMAND.getMessage());
         }
         Map<String, String> parseCommand = new HashMap<>();

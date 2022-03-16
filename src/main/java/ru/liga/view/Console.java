@@ -1,11 +1,13 @@
 package ru.liga.view;
 
 import ru.liga.model.Answer;
+import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
 import ru.liga.utils.DateTimeUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Console implements View {
@@ -22,7 +24,10 @@ public class Console implements View {
 
     @Override
     public void printMessage(Answer answer, Long chatId, Command command) {
-
+        if (answer.getText() != null) {
+            printMessage(answer.getText());
+        }
+        else printRates(answer.getRatesMap());
     }
 
     public void printMessage(String text) {
@@ -35,13 +40,10 @@ public class Console implements View {
     }
 
 
-    private void printRates(List<Rate> rates) {
+    private void printRates(Map<Currency, List<Rate>> ratesMap) {
+        List<Rate> rates = ratesMap.values().stream().findFirst().orElse(null);
+        assert rates != null;
         rates.forEach(this::printDayRate);
-    }
-
-    @Override
-    public void printMessage(Object answer, Long chatId, Command command) {
-
     }
 
 

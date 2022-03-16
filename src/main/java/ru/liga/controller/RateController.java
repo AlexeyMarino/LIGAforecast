@@ -26,14 +26,10 @@ public class RateController implements Controller {
 
     @Override
     public Answer operate() {
-        boolean output = command.getOutput() == Output.GRAPH;
-
         ForecastService service = getService(command.getAlgorithm());
-
+        boolean output = command.getOutput() == Output.GRAPH;
         return new Answer(getRatesFromPeriod(service, command.getPeriod()), output);
-
     }
-
 
     private ForecastService getService(Algorithm algorithm) {
         if (algorithm == Algorithm.LR) {
