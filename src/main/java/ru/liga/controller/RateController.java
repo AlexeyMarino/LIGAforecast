@@ -6,6 +6,7 @@ import ru.liga.repository.RatesRepository;
 import ru.liga.service.ActualAlgorithmService;
 import ru.liga.service.ForecastService;
 import ru.liga.service.LinearRegressionForecastService;
+import ru.liga.service.MysticAlgorithmService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class RateController implements Controller {
             return new LinearRegressionForecastService(repository);
         } else if (algorithm == Algorithm.ACTUAL) {
             return new ActualAlgorithmService(repository);
-        } else return new LinearRegressionForecastService(repository);
+        } else return new MysticAlgorithmService(repository);
     }
 
     private Map<Currency, List<Rate>> getRatesFromPeriod(ForecastService service, Period period) {

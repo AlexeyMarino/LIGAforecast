@@ -69,7 +69,7 @@ public class ParseRateCsv {
                 Rate rate = new Rate(nominal, lastDate, currentRate, currency);
                 rateList.add(rate);
             }
-            rateList.add(new Rate(nominal, currentDate, currentRate, currency));
+            rateList.add(new Rate(currentNominal, currentDate, currentRate, currency));
             lastDate = currentDate;
         }
         return rateList;

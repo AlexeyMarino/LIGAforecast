@@ -24,17 +24,17 @@ public class ActualAlgorithmService implements ForecastService {
         if (period.getDate().isAfter(rates.get(rates.size() - 1).getDate().plusYears(2))) {
             throw new IllegalDateException(ExceptionMessage.ILLEGAL_DATE_FROM_ACTUAL.getMessage() + rates.get(rates.size() - 1).getDate());
         }
-        List<Rate> listRates = new ArrayList<>();
+        List<Rate> resultRates = new ArrayList<>();
         if (period.isPeriod()) {
             LocalDate lastDate = LocalDate.now();
             while (!lastDate.equals(period.getDate())) {
-                listRates.add(getDateRate(rates, lastDate.plusDays(1), currency));
+                resultRates.add(getDateRate(rates, lastDate.plusDays(1), currency));
                 lastDate = lastDate.plusDays(1);
             }
         } else {
-            listRates.add(getDateRate(rates, period.getDate(), currency));
+            resultRates.add(getDateRate(rates, period.getDate(), currency));
         }
-        return listRates;
+        return resultRates;
     }
 
     private Rate getDateRate(List<Rate> rates, LocalDate date, Currency currency) {
