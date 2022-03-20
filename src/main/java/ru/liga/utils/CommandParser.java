@@ -1,13 +1,15 @@
 package ru.liga.utils;
 
 import ru.liga.exception.InvalidCommandException;
-import ru.liga.exception.RepeatCommandParameter;
+import ru.liga.exception.RepeatCommandParameterException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static ru.liga.exception.ExceptionMessage.INVALID_COMMAND;
 import static ru.liga.exception.ExceptionMessage.REPEAT_COMMAND_PARAMETER;
+import static ru.liga.model.command.CommandParameters.COMMAND_NAME;
+import static ru.liga.model.command.CommandParameters.CURRENCIES;
 
 public class CommandParser {
     public Map<String, String> parse(String text) {
@@ -20,16 +22,16 @@ public class CommandParser {
             throw new InvalidCommandException(INVALID_COMMAND.getMessage());
         }
         Map<String, String> parseCommand = new HashMap<>();
-        parseCommand.put("commandName", splitText[0]);
+        parseCommand.put(COMMAND_NAME, splitText[0]);
         if (splitText.length > 2) {
-            parseCommand.put("currencies", splitText[1]);
+            parseCommand.put(CURRENCIES, splitText[1]);
             String checkRepeat = null;
             for (int i = 2; i < splitText.length; i++) {
                 if (splitText[i].startsWith("-")) {
                     checkRepeat = parseCommand.putIfAbsent(splitText[i], splitText[i + 1]);
                 }
                 if (checkRepeat != null) {
-                    throw new RepeatCommandParameter(REPEAT_COMMAND_PARAMETER.getMessage() + splitText[i]);
+                    throw new RepeatCommandParameterException(REPEAT_COMMAND_PARAMETER.getMessage() + splitText[i]);
                 }
             }
         }

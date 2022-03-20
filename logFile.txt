@@ -1,0 +1,40 @@
+12:22:51.404  1569 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+12:24:38.506  108671 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888236
+12:24:39.002  109167 [LigalniyBot Telegram Executor] DEBUG c.g.s.m.builder.CompositeBuilder - .plot command: ret_1ee51a3e_fe9c_4dd9_a8bf_ab7c4e62d6a0 = plt.plot(np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0]),np.array([108.07389831664814, 108.94804766036339, 109.82219700407862, 110.69634634779386, 111.57049569150911, 112.44464503522434, 113.31879437893957, 114.19294372265482, 115.06709306637006, 115.9412424100853, 116.81539175380053, 117.68954109751577, 118.56369044123102, 119.43783978494625, 120.3119891286615, 121.18613847237674, 122.06028781609197, 122.9344371598072, 123.80858650352245, 124.6827358472377, 125.55688519095293, 126.43103453466816, 127.3051838783834, 128.17933322209865, 129.05348256581388, 129.9276319095291, 130.80178125324437, 131.6759305969596, 132.55007994067483, 133.4242292843901]))
+12:24:39.004  109169 [LigalniyBot Telegram Executor] DEBUG c.g.s.m.builder.CompositeBuilder - .plot command: ret_868f4fe9_7579_4184_a7e4_83ab19b68083 = plt.plot(np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0]),np.array([75.63294680756397, 76.17137457174638, 76.70980233592881, 77.24823010011124, 77.78665786429366, 78.32508562847609, 78.86351339265852, 79.40194115684093, 79.94036892102336, 80.4787966852058, 81.01722444938821, 81.55565221357064, 82.09407997775307, 82.63250774193548, 83.17093550611791, 83.70936327030034, 84.24779103448276, 84.78621879866519, 85.32464656284762, 85.86307432703003, 86.40150209121246, 86.9399298553949, 87.47835761957731, 88.01678538375974, 88.55521314794217, 89.09364091212458, 89.632068676307, 90.17049644048944, 90.70892420467186, 91.24735196885428]))
+12:24:39.004  109169 [LigalniyBot Telegram Executor] DEBUG c.g.s.m.builder.CompositeBuilder - .plot command: ret_cb330924_16bd_4002_b0af_fea968d05128 = plt.xlabel("Дата")
+12:24:39.004  109169 [LigalniyBot Telegram Executor] DEBUG c.g.s.m.builder.CompositeBuilder - .plot command: ret_3355f8db_2aa3_4ec7_b528_a575fe626bce = plt.ylabel("Курс валюты")
+12:24:39.005  109170 [LigalniyBot Telegram Executor] DEBUG c.g.s.m.builder.CompositeBuilder - .plot command: ret_a4904193_8f17_4e0d_ae26_5b0ddbbaa0d5 = plt.savefig("src/main/resources/graph.png",dpi=200.0)
+12:24:39.015  109180 [LigalniyBot Telegram Executor] DEBUG c.g.sh0nk.matplotlib4j.PyCommand - Commands... : [python, C:\Users\Marina\AppData\Local\Temp\1647768279012-0\exec.py]
+12:24:41.226  111391 [LigalniyBot Telegram Executor] WARN  c.g.sh0nk.matplotlib4j.PyCommand - 
+12:24:48.106  118271 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888237
+13:21:12.532  1387 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+13:21:12.765  1620 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888238
+13:21:38.047  1330 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+13:21:50.086  13369 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888239
+13:24:24.482  1412 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+13:25:15.737  52667 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888240
+13:40:09.490  1379 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+13:41:49.122  101011 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888241
+13:42:37.859  1658 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+13:42:53.769  17568 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888242
+14:14:11.014  1345 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+14:19:33.404  1382 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+14:19:41.325  9303 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888243
+14:26:58.016  1414 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+14:27:58.070  61468 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888244
+14:28:39.176  102574 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888245
+14:30:57.149  1366 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+14:33:44.619  1634 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+14:35:25.344  1445 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:06:01.635  1868 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:09:00.867  1442 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:10:07.490  2325 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:11:10.765  1770 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:11:44.559  1678 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:12:29.162  1945 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:13:38.337  1655 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:14:35.477  1956 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:16:14.002  1250 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения
+15:17:32.749  79997 [LigalniyBot Telegram Executor] DEBUG ru.liga.Bot - Получен новый Update. updateID: 826888246
+15:40:33.555  1410 [main] INFO  ru.liga.Bot - Приложение стартовало. Ожидаются сообщения

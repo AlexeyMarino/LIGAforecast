@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.liga.Bot;
 import ru.liga.model.Answer;
@@ -23,19 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
-public class TelegramView implements View {
+public class TelegramViewImpl implements View {
     private final Bot bot;
-
-    public Message getMessage() {
-        Update update = null;
-        try {
-            update = (Update) bot.getReceiveQueue().take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        assert update != null;
-        return update.getMessage();
-    }
 
     @Override
     public void printMessage(Answer answer, Long chatId, Command command) {
@@ -69,7 +56,7 @@ public class TelegramView implements View {
     }
 
     private String printDayRate(Rate rate) {
-        return String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_FORMATTER), String.format("%.2f", rate.getRate()));
+        return String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_DATE_FORMATTER_E_DD_MM_YYYY), String.format("%.2f", rate.getRate()));
     }
 
     private String printRates(Map<Currency, List<Rate>> ratesMap) {
@@ -93,7 +80,7 @@ public class TelegramView implements View {
                     .map(r -> r.getRate().doubleValue()).toList();
             plt.plot().add(x, rates);
         }
-       //  plt.title();
+        //  plt.title();
         plt.xlabel("Дата");
         plt.ylabel("Курс валюты");
         plt.savefig("src/main/resources/graph.png").dpi(200);
@@ -104,9 +91,6 @@ public class TelegramView implements View {
         }
         return new File("src/main/resources/graph.png");
     }
-
-
-
 
 
 }

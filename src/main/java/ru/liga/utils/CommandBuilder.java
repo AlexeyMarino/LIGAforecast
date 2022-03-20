@@ -15,15 +15,17 @@ import java.util.Map;
 
 import static ru.liga.exception.ExceptionMessage.ILLEGAL_GRAPH_OUTPUT;
 import static ru.liga.exception.ExceptionMessage.ILLEGAL_LIST_OUTPUT;
+import static ru.liga.model.command.CommandParameters.COMMAND_NAME;
+import static ru.liga.model.command.CommandParameters.CURRENCIES;
 
 public class CommandBuilder {
     CommandValidator validator = new CommandValidator();
 
     public Command buildCommand(Map<String, String> splitCommand) {
-        CommandName commandName = validator.getValidateCommandName(splitCommand.get("commandName"));
+        CommandName commandName = validator.getValidateCommandName(splitCommand.get(COMMAND_NAME));
 
         if (commandName == CommandName.RATE) {
-            List<Currency> currencies = validator.getValidateCurrencies(splitCommand.get("currencies"));
+            List<Currency> currencies = validator.getValidateCurrencies(splitCommand.get(CURRENCIES));
 
             Period period = validator.getValidatePeriod(splitCommand);
 

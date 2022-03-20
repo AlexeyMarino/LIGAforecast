@@ -2,7 +2,6 @@ package ru.liga.model.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import ru.liga.model.Algorithm;
 import ru.liga.model.Currency;

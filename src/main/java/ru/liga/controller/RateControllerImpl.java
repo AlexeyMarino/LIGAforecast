@@ -3,10 +3,10 @@ package ru.liga.controller;
 import ru.liga.model.*;
 import ru.liga.model.command.Command;
 import ru.liga.repository.RatesRepository;
-import ru.liga.service.ActualAlgorithmService;
+import ru.liga.service.ActualAlgorithmForecastServiceImpl;
 import ru.liga.service.ForecastService;
-import ru.liga.service.LinearRegressionForecastService;
-import ru.liga.service.MysticAlgorithmService;
+import ru.liga.service.LinearRegressionForecastServiceImpl;
+import ru.liga.service.MysticAlgorithmForecastServiceImpl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +16,11 @@ import java.util.Map;
  * Класс контроллера обрабатывающего запросы о прогнозе курсов валют
  */
 
-public class RateController implements Controller {
+public class RateControllerImpl implements Controller {
     private final Command command;
     private final RatesRepository repository;
 
-    public RateController(Command command, RatesRepository repository) {
+    public RateControllerImpl(Command command, RatesRepository repository) {
         this.command = command;
         this.repository = repository;
     }
@@ -34,16 +34,16 @@ public class RateController implements Controller {
 
     private ForecastService getService(Algorithm algorithm) {
         if (algorithm == Algorithm.LR) {
-            return new LinearRegressionForecastService(repository);
+            return new LinearRegressionForecastServiceImpl(repository);
         } else if (algorithm == Algorithm.ACTUAL) {
-            return new ActualAlgorithmService(repository);
-        } else return new MysticAlgorithmService(repository);
+            return new ActualAlgorithmForecastServiceImpl(repository);
+        } else return new MysticAlgorithmForecastServiceImpl(repository);
     }
 
     private Map<Currency, List<Rate>> getRatesFromPeriod(ForecastService service, Period period) {
         Map<Currency, List<Rate>> ratesMap = new HashMap<>();
-        for (int i = 0; i < command.getCurrency().size(); i++) { //for each
-            ratesMap.put(command.getCurrency().get(i), service.getRates(command.getCurrency().get(i), period));
+        for (Currency currency : command.getCurrency()) {
+            ratesMap.put(currency, service.getRates(currency, period));
         }
         return ratesMap;
     }

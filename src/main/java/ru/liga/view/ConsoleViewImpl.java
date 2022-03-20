@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ConsoleView implements View {
+public class ConsoleViewImpl implements View {
     private final Scanner scanner;
 
-    public ConsoleView() {
+    public ConsoleViewImpl() {
         scanner = new Scanner(System.in);
     }
 
@@ -26,8 +26,7 @@ public class ConsoleView implements View {
     public void printMessage(Answer answer, Long chatId, Command command) {
         if (answer.getText() != null) {
             printMessage(answer.getText());
-        }
-        else printRates(answer.getRatesMap());
+        } else printRates(answer.getRatesMap());
     }
 
     public void printMessage(String text) {
@@ -36,7 +35,7 @@ public class ConsoleView implements View {
 
 
     private void printDayRate(Rate rate) {
-        printMessage(String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_FORMATTER), String.format("%.2f", rate.getRate())));
+        printMessage(String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_DATE_FORMATTER_E_DD_MM_YYYY), String.format("%.2f", rate.getRate())));
     }
 
 

@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public class MysticAlgorithmService implements ForecastService {
+public class MysticAlgorithmForecastServiceImpl implements ForecastService {
     @NonNull
     private final RatesRepository repository;
 
-    private final LocalDate FIRST_MOON_DATE = LocalDate.parse("19.12.2021", DateTimeUtil.PARSE_FORMATTER);
-    private final LocalDate SECOND_MOON_DATE = LocalDate.parse("18.01.2022", DateTimeUtil.PARSE_FORMATTER);
-    private final LocalDate THIRD_MOON_DATE = LocalDate.parse("16.02.2022", DateTimeUtil.PARSE_FORMATTER);
+    private final LocalDate FIRST_MOON_DATE = LocalDate.parse("19.12.2021", DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
+    private final LocalDate SECOND_MOON_DATE = LocalDate.parse("18.01.2022", DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
+    private final LocalDate THIRD_MOON_DATE = LocalDate.parse("16.02.2022", DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
 
     @Override
     public List<Rate> getRates(Currency currency, Period period) {
@@ -42,12 +42,12 @@ public class MysticAlgorithmService implements ForecastService {
         if (period.isPeriod()) {
             LocalDate lastDate = LocalDate.now();
             while (!lastDate.equals(period.getDate())) {
-                resultRates.add(new Rate(rates.get(rates.size() - 1).getNominal(), lastDate, arithmeticMeanRateFromThreeMoon, currency));
+                resultRates.add(new Rate(lastDate, arithmeticMeanRateFromThreeMoon, currency));
                 lastDate = lastDate.plusDays(1);
                 arithmeticMeanRateFromThreeMoon = BigDecimal.valueOf(addPercentageToNumber(arithmeticMeanRateFromThreeMoon.doubleValue(), getPercentage(LOWER_BOUND, UPPER_BOUND)));
             }
         } else {
-            resultRates.add(new Rate(rates.get(rates.size() - 1).getNominal(), period.getDate(), arithmeticMeanRateFromThreeMoon, currency));
+            resultRates.add(new Rate(period.getDate(), arithmeticMeanRateFromThreeMoon, currency));
         }
         return resultRates;
     }
@@ -63,7 +63,8 @@ public class MysticAlgorithmService implements ForecastService {
                     .get()
                     .getRate());
         }
-        averageExchangeRateForThreeDays = averageExchangeRateForThreeDays.divide(BigDecimal.valueOf(3), RoundingMode.FLOOR);
+        int THREE_DATES = 3;
+        averageExchangeRateForThreeDays = averageExchangeRateForThreeDays.divide(BigDecimal.valueOf(THREE_DATES), RoundingMode.FLOOR);
         return averageExchangeRateForThreeDays;
     }
 
@@ -73,7 +74,8 @@ public class MysticAlgorithmService implements ForecastService {
     }
 
     private Double addPercentageToNumber(double number, int percentage) {
-        number = number + ((number * percentage) / 100);
+        int FOR_PERCENT = 100;
+        number = number + ((number * percentage) / FOR_PERCENT);
         return number;
     }
 

@@ -8,22 +8,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
  * Класс для парсинга СSV файлов и маппинга этих данных в модель
  */
 public class ParseRateCsv {
+    private static final String NOMINAL = "nominal";
+    private static final String DATA = "data";
+    private static final String CURS = "curs";
+    private static final String CDX = "cdx";
+    private static final String DELIMITER = ";";
 
-    /**
-     * @param filePath путь к файлу для парсинга
-     * @throws IOException в случае отсутствия файла или нарушении его структуры будет выброшено исключение
-     */
-    public static List<Rate> parse(String filePath) throws IOException {
+    public static List<Rate> parse(String filePath) throws IOException, ParseException {
         //Загружаем строки из файла
         List<String> fileLines;
         try (InputStream in = ParseRateCsv.class.getResourceAsStream(filePath);
@@ -32,68 +37,48 @@ public class ParseRateCsv {
         }
         LocalDate lastDate = null;
 
-        List<String> headlines = Arrays.stream(fileLines.get(0).split(";")).toList();
-        int nominal = headlines.indexOf("nominal");
-        int data = headlines.indexOf("data");
-        int curs = headlines.indexOf("curs");
-        int cdx = headlines.indexOf("cdx");
+        List<String> headlines = Arrays.stream(fileLines.get(0).split(DELIMITER)).toList();
+        int nominal = headlines.indexOf(NOMINAL);
+        int data = headlines.indexOf(DATA);
+        int curs = headlines.indexOf(CURS);
+        int cdx = headlines.indexOf(CDX);
         List<Rate> rateList = new ArrayList<>();
-        for (int i = 1; i < fileLines.size(); i++) {
+        int FIRST_LINE_WITH_VALUES = 1;
+        for (int i = FIRST_LINE_WITH_VALUES; i < fileLines.size(); i++) {
             String fileLine = fileLines.get(i);
-            String[] splitText = fileLine.split(";");
-            List<String> columnList = new ArrayList<>();
-            for (String s : splitText) {
-                //Если колонка начинается на кавычки или заканчиваеться на кавычки
-                if (IsColumnPart(s)) {
-                    String lastText = columnList.get(columnList.size() - 1);
-                    columnList.set(columnList.size() - 1, lastText + "," + s);
-                } else {
-                    columnList.add(s);
-                }
-            }
+            String[] splitText = fileLine.split(DELIMITER);
+            List<String> columnList = new ArrayList<>(Arrays.asList(splitText));
 
             //Создаем сущности на основе полученной информации
-            int currentNominal = (int) Double.parseDouble(columnList.get(nominal));
-            LocalDate currentDate = LocalDate.parse(columnList.get(data), DateTimeUtil.PARSE_FORMATTER);
-            BigDecimal currentRate = null;
-            try {
-                currentRate = BigDecimal.valueOf(NumberFormat.getInstance(new Locale("RU")).parse(columnList.get(curs).replace("\"", "")).doubleValue());
-            } catch (ParseException e) {
-                e.printStackTrace(); // править
+            int currentNominal = Integer.parseInt(columnList.get(nominal).replace(".", ""));
+            LocalDate currentDate = LocalDate.parse(columnList.get(data), DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
+            String stringRate = columnList.get(curs).replace("\"", "");
+            BigDecimal currentRate = BigDecimal.valueOf(NumberFormat.getInstance().parse(stringRate).doubleValue());
+            // нормализация курса-номинала
+            if (currentNominal != 1) {
+                currentRate = currentRate.divide(BigDecimal.valueOf(currentNominal), RoundingMode.FLOOR);
             }
             Currency currency = getCurrency(columnList.get(cdx));
 
-
             while (lastDate != null && !currentDate.equals(lastDate.minusDays(1))) {
                 lastDate = lastDate.minusDays(1);
-                Rate rate = new Rate(nominal, lastDate, currentRate, currency);
+                Rate rate = new Rate(lastDate, currentRate, currency);
                 rateList.add(rate);
             }
-            rateList.add(new Rate(currentNominal, currentDate, currentRate, currency));
+            rateList.add(new Rate(currentDate, currentRate, currency));
             lastDate = currentDate;
         }
         return rateList;
     }
 
-    //Проверка является ли колонка частью предыдущей колонки
-    private static boolean IsColumnPart(String text) {
-        String trimText = text.trim();
-        //Если в тексте одна ковычка и текст на нее заканчиваеться значит это часть предыдущей колонки
-        return trimText.indexOf("\"") == trimText.lastIndexOf("\"") && trimText.endsWith("\"");
-    }
-
     private static Currency getCurrency(String currencyTitle) {
-        Currency currency;
-        switch (currencyTitle) {
-            case "Доллар США" -> currency = Currency.USD;
-            case "ЕВРО" -> currency = Currency.EUR;
-            case "Турецкая лира" -> currency = Currency.TRY;
-            case "Армянский драм" -> currency = Currency.AMD;
-            case "Болгарский лев" -> currency = Currency.BGN;
-            default -> currency = null;
-        }
-        return currency;
+        return switch (currencyTitle) {
+            case "Доллар США" -> Currency.USD;
+            case "Евро" -> Currency.EUR;
+            case "Турецкая лира" -> Currency.TRY;
+            case "Армянский драм" -> Currency.AMD;
+            case "Болгарский лев" -> Currency.BGN;
+            default -> null;
+        };
     }
-
-
 }

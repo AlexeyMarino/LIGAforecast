@@ -13,7 +13,9 @@ public enum ExceptionMessage {
     ILLEGAL_LIST_OUTPUT("Больше одного наименования валюты можно указывать только при выводе графика (-output graph)"),
     ILLEGAL_GRAPH_OUTPUT("Вывод данных в виде графика возможен только при предсказании на период, а не на конкретную дату"),
     ILLEGAL_DATE_FROM_ACTUAL("Введена слишком поздняя дата, последняя доступная для предсказания дата - "),
-    REPEAT_COMMAND_PARAMETER("Вы ввели один параметр больше одного раза. Параметр: ");
+    REPEAT_COMMAND_PARAMETER("Вы ввели один параметр больше одного раза. Параметр: "),
+    INTERNAL_ERROR("Произошла внутренняя ошибка приложения"),
+    CSV_PARSE_ERROR("Ошибка загрузки данных из файлов CSV");
 
 
     private final String message;

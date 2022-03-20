@@ -5,5 +5,4 @@ import ru.liga.model.command.Command;
 
 public interface View {
     void printMessage(Answer answer, Long chatId, Command command);
-
 }
