@@ -18,10 +18,13 @@ public class CommandValidator {
         Output output = null;
         if (splitCommand.containsKey("-output")) {
             try {
-                output = Output.valueOf(splitCommand.get("-output").toUpperCase(Locale.ROOT));
+                output = Output.valueOf(splitCommand.get("-output").toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new IllegalOutputException(ILLEGAL_OUTPUT.getMessage());
             }
+        }
+        else {
+            output = Output.LIST;
         }
         return output;
     }
@@ -29,7 +32,7 @@ public class CommandValidator {
     public Algorithm getValidateAlgorithm(Map<String, String> splitCommand) {
         Algorithm algorithm;
         try {
-            algorithm = Algorithm.valueOf(splitCommand.get("-alg").toUpperCase(Locale.ROOT));
+            algorithm = Algorithm.valueOf(splitCommand.get("-alg").toUpperCase());
         } catch (Exception e) {
             throw new IllegalAlgorithmException(ILLEGAL_ALGORITHM.getMessage());
         }
@@ -64,7 +67,7 @@ public class CommandValidator {
     public Period getValidatePeriod(Map<String, String> splitCommand) {
         Period period = new Period();
 
-        if (splitCommand.containsKey("-period") && splitCommand.containsKey("-date"))
+        if (splitCommand.containsKey("-period") && splitCommand.containsKey("-date")) // в константы
             throw new InvalidCommandException(INVALID_COMMAND.getMessage());
 
         if (splitCommand.containsKey("-period")) {

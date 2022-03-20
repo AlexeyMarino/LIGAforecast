@@ -59,7 +59,7 @@ public class ParseRateCsv {
             try {
                 currentRate = BigDecimal.valueOf(NumberFormat.getInstance(new Locale("RU")).parse(columnList.get(curs).replace("\"", "")).doubleValue());
             } catch (ParseException e) {
-                e.printStackTrace();
+                e.printStackTrace(); // править
             }
             Currency currency = getCurrency(columnList.get(cdx));
 

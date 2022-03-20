@@ -28,7 +28,7 @@ public class InMemoryRatesRepository implements RatesRepository {
             repository.put(Currency.AMD, ParseRateCsv.parse("/AMD_F01_02_2005_T05_03_2022.csv"));
             repository.put(Currency.BGN, ParseRateCsv.parse("/BGN_F01_02_2005_T05_03_2022.csv"));
         } catch (IOException e) {
-            System.out.println("Ошибка загрузки данных из файлов CSV"); // заменить методом Console
+            System.out.println("Ошибка загрузки данных из файлов CSV"); // заменить методом ConsoleView
             e.printStackTrace();
         }
 

@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Console implements View {
+public class ConsoleView implements View {
     private final Scanner scanner;
 
-    public Console() {
+    public ConsoleView() {
         scanner = new Scanner(System.in);
     }
 

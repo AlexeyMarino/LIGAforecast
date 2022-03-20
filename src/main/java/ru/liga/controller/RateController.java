@@ -42,8 +42,9 @@ public class RateController implements Controller {
 
     private Map<Currency, List<Rate>> getRatesFromPeriod(ForecastService service, Period period) {
         Map<Currency, List<Rate>> ratesMap = new HashMap<>();
-        for (int i = 0; i < command.getCurrency().size(); i++)
+        for (int i = 0; i < command.getCurrency().size(); i++) { //for each
             ratesMap.put(command.getCurrency().get(i), service.getRates(command.getCurrency().get(i), period));
+        }
         return ratesMap;
     }
 
