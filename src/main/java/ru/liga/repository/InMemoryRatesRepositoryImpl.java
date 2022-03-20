@@ -1,5 +1,6 @@
 package ru.liga.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.liga.exception.CsvParseException;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
@@ -17,6 +18,7 @@ import static ru.liga.exception.ExceptionMessage.CSV_PARSE_ERROR;
  * Инмемори репозиторий для хранения значений курсов валют, загруженых из CSV файлов и работы с этими данными
  */
 
+@Slf4j
 public class InMemoryRatesRepositoryImpl implements RatesRepository {
 
     private static final Map<Currency, List<Rate>> repository = new HashMap<>();
@@ -32,6 +34,7 @@ public class InMemoryRatesRepositoryImpl implements RatesRepository {
         } catch (Exception e) {
             throw new CsvParseException(CSV_PARSE_ERROR.getMessage());
         }
+        log.debug("Информация из CSV файлов успешно загружена в InMemoryRatesRepository");
 
     }
 

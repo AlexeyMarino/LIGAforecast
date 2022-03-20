@@ -4,22 +4,26 @@ import com.github.sh0nk.matplotlib4j.NumpyUtils;
 import com.github.sh0nk.matplotlib4j.Plot;
 import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.liga.Bot;
+import ru.liga.exception.PlottingException;
 import ru.liga.model.Answer;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
 import ru.liga.utils.DateTimeUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static ru.liga.exception.ExceptionMessage.PLOTTING_ERROR;
+
+@Slf4j
 @AllArgsConstructor
 public class TelegramViewImpl implements View {
     private final Bot bot;
@@ -40,18 +44,18 @@ public class TelegramViewImpl implements View {
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
-            //логируем сбой Telegram Bot API, используя userName !!!!!
+            log.debug("Не удалось отправить сообщение: " + e.getMessage());
         }
     }
 
-    public void sendPhoto(File file, Long chatId) {
+    public void sendPhoto(String fileName, Long chatId) {
         SendPhoto photo = new SendPhoto();
-        photo.setPhoto(new InputFile(file, "Graph"));
+        photo.setPhoto(new InputFile(TelegramViewImpl.class.getResourceAsStream(fileName), "Graph"));
         photo.setChatId(chatId.toString());
         try {
             bot.execute(photo);
         } catch (TelegramApiException e) {
-            //логируем сбой Telegram Bot API, используя userName !!!!!
+            log.debug("Не удалось отправить график: " + e.getMessage());
         }
     }
 
@@ -69,7 +73,7 @@ public class TelegramViewImpl implements View {
         return ratesString.toString();
     }
 
-    public File getGraph(Map<Currency, List<Rate>> ratesMap) {
+    public String getGraph(Map<Currency, List<Rate>> ratesMap) {
 
         int days = ratesMap.values().stream().findFirst().get().size();
 
@@ -87,9 +91,11 @@ public class TelegramViewImpl implements View {
         try {
             plt.executeSilently();
         } catch (IOException | PythonExecutionException e) {
-            e.printStackTrace();
+            log.debug(PLOTTING_ERROR + e.getMessage());
+            throw new PlottingException(PLOTTING_ERROR.getMessage());
         }
-        return new File("src/main/resources/graph.png");
+
+        return "/graph.png";
     }
 
 

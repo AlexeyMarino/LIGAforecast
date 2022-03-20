@@ -15,7 +15,8 @@ public enum ExceptionMessage {
     ILLEGAL_DATE_FROM_ACTUAL("Введена слишком поздняя дата, последняя доступная для предсказания дата - "),
     REPEAT_COMMAND_PARAMETER("Вы ввели один параметр больше одного раза. Параметр: "),
     INTERNAL_ERROR("Произошла внутренняя ошибка приложения"),
-    CSV_PARSE_ERROR("Ошибка загрузки данных из файлов CSV");
+    CSV_PARSE_ERROR("Ошибка загрузки данных из файлов CSV"),
+    PLOTTING_ERROR("При построении графика произошла ошибка");
 
 
     private final String message;

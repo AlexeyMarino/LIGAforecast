@@ -35,7 +35,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(this);
-            log.info("Приложение стартовало. Ожидаются сообщения");
+            log.info("Приложение запущено. Ожидаются сообщения");
         } catch (TelegramApiException e) {
             log.error("Приложению не удалось подключиться: " + e.getMessage());
         }
@@ -52,8 +52,10 @@ public class Bot extends TelegramLongPollingBot {
             Answer answer = controller.operate();
             view.printMessage(answer, chatId, command);
         } catch (BaseException e) {
+            log.debug("ERROR: " + e.getMessage());
             view.sendText(e.getMessage(), chatId);
         } catch (Exception ex) {
+            log.debug("ERROR: " + ex.getMessage());
             view.sendText(INTERNAL_ERROR.getMessage(), chatId);
         }
     }
@@ -64,7 +66,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             prop.load(App.class.getClassLoader().getResourceAsStream("config.properties"));
         } catch (IOException ex) {
-            log.error("Ошибка получения имени бота " + ex.getMessage());
+            log.debug("Ошибка получения имени бота " + ex.getMessage());
         }
         return prop.getProperty("userName");
     }
@@ -74,7 +76,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             prop.load(App.class.getClassLoader().getResourceAsStream("config.properties"));
         } catch (IOException ex) {
-            log.error("Ошибка получения имени бота " + ex.getMessage());
+            log.debug("Ошибка получения имени бота " + ex.getMessage());
         }
         return prop.getProperty("token");
     }
