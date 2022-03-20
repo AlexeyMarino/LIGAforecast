@@ -3,6 +3,7 @@ package ru.liga.view;
 import com.github.sh0nk.matplotlib4j.NumpyUtils;
 import com.github.sh0nk.matplotlib4j.Plot;
 import com.github.sh0nk.matplotlib4j.PythonExecutionException;
+import lombok.AllArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -10,12 +11,10 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.liga.Bot;
+import ru.liga.model.Answer;
 import ru.liga.model.Currency;
-import ru.liga.model.Output;
-import ru.liga.model.Period;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
-import ru.liga.model.command.RateCommand;
 import ru.liga.utils.DateTimeUtil;
 
 import java.io.File;
@@ -23,12 +22,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
 public class TelegramView implements View {
     private final Bot bot;
-
-    public TelegramView(Bot bot) {
-        this.bot = bot;
-    }
 
     public Message getMessage() {
         Update update = null;
@@ -37,37 +33,18 @@ public class TelegramView implements View {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        assert update != null;
         return update.getMessage();
     }
 
-
     @Override
-    public void printMessage(Object answer, Long chatId, Command command) {
-        if (answer instanceof String) {
-            sendText((String) answer, chatId);
-            return;
-        }
-
-        String stringAnswer;
-        RateCommand rateCommand = (RateCommand) command;
-
-
-        if (answer instanceof Map<?, ?>) {
-            Map<Currency, List<Rate>> mapRates = (Map<Currency, List<Rate>>) answer;
-
-            if (((RateCommand) command).getOutput() == Output.LIST) {
-                stringAnswer = printRates(mapRates, rateCommand.getCurrency().get(0));
-                sendText(stringAnswer, chatId);
-                return;
-            }
-            if (((RateCommand) command).getOutput() == Output.GRAPH) {
-                int days = rateCommand.getPeriod() == Period.MONTH ? 30 : 7;
-                sendPhoto(getGraph(mapRates, days), chatId);
-            }
-
-        }
+    public void printMessage(Answer answer, Long chatId, Command command) {
+        if (answer.getText() != null) {
+            sendText(answer.getText(), chatId);
+        } else if (answer.isOutputGraph()) {
+            sendPhoto(getGraph(answer.getRatesMap()), chatId);
+        } else sendText(printRates(answer.getRatesMap()), chatId);
     }
-
 
     public void sendText(String answer, Long chatId) {
         SendMessage message = new SendMessage();
@@ -91,23 +68,24 @@ public class TelegramView implements View {
         }
     }
 
-
     private String printDayRate(Rate rate) {
         return String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_FORMATTER), String.format("%.2f", rate.getRate()));
     }
 
-
-    private String printRates(Map<Currency, List<Rate>> ratesMap, Currency currency) {
-
+    private String printRates(Map<Currency, List<Rate>> ratesMap) {
         StringBuilder ratesString = new StringBuilder();
-        for (Rate rate : ratesMap.get(currency)) {
-            ratesString.append(printDayRate(rate));
-            ratesString.append("\n");
+        List<Rate> rates = ratesMap.values().stream().findFirst().orElse(null);
+        assert rates != null;
+        for (Rate rate : rates) {
+            ratesString.append(printDayRate(rate)).append("\n");
         }
         return ratesString.toString();
     }
 
-    public File getGraph(Map<Currency, List<Rate>> ratesMap, int days) {
+    public File getGraph(Map<Currency, List<Rate>> ratesMap) {
+
+        int days = ratesMap.values().stream().findFirst().get().size();
+
         List<Double> x = NumpyUtils.linspace(1, days, days);
         Plot plt = Plot.create();
         for (List<Rate> currencyRates : ratesMap.values()) {
@@ -115,6 +93,7 @@ public class TelegramView implements View {
                     .map(r -> r.getRate().doubleValue()).toList();
             plt.plot().add(x, rates);
         }
+       //  plt.title();
         plt.xlabel("Дата");
         plt.ylabel("Курс валюты");
         plt.savefig("src/main/resources/graph.png").dpi(200);
@@ -123,15 +102,11 @@ public class TelegramView implements View {
         } catch (IOException | PythonExecutionException e) {
             e.printStackTrace();
         }
-//
         return new File("src/main/resources/graph.png");
-
     }
 
-    @Override
-    public void printMessage(String text) {
 
-    }
+
 
 
 }

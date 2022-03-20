@@ -4,10 +4,8 @@
         <file>c:/jcg.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-
                 %d{yyyy-MM-dd_HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
             </Pattern>
-
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <FileNamePattern>c:/jcg.%i.log.zip</FileNamePattern>
@@ -18,11 +16,8 @@
             <MaxFileSize>2MB</MaxFileSize>
         </triggeringPolicy>
     </appender>
-    <logger name="com.javacodegeeks.examples.logbackexample.beans" level="INFO" >
-        <appender-ref ref="FILE" />
-    </logger>
     <!-- By default, the level of the root level is set to DEBUG -->
-    <root level="DEBUG">
-        <appender-ref ref="STDOUT" />
+    <root level="INFO">
+        <appender-ref ref="FILE" />
     </root>
 </configuration>

@@ -1,6 +1,10 @@
 package ru.liga.service;
 
+import com.github.sh0nk.matplotlib4j.NumpyUtils;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import ru.liga.model.Currency;
+import ru.liga.model.Period;
 import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
 import ru.liga.utils.LinearRegression;
@@ -8,19 +12,19 @@ import ru.liga.utils.LinearRegression;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class LinearRegressionForecastService implements ForecastService {
+    @NonNull
     private final RatesRepository repository;
     private final int MONTH = 30;
 
-    public LinearRegressionForecastService(RatesRepository repository) {
-        this.repository = repository;
-    }
-
     @Override
-    public List<Rate> getRates(Currency currency, int period) {
+    public List<Rate> getRates(Currency currency, Period period) {
         List<Rate> rates = repository.getRates(currency, MONTH);
 
         LinearRegression linearRegression = getLinearRegressionFromMonth(rates);
@@ -32,47 +36,21 @@ public class LinearRegressionForecastService implements ForecastService {
             dateCounter++;
         }
         List<Rate> result = new ArrayList<>();
-        for (int i = dateCounter; i < dateCounter + period; i++) {
-            result.add(new Rate(1, lastDate.plusDays(1), BigDecimal.valueOf(linearRegression.predict(i + 1)), currency));
-            lastDate = lastDate.plusDays(1);
-        }
-        return result;
-    }
-
-    @Override
-    public List<Rate> getDateRate(Currency currency, LocalDate date) {
-        List<Rate> rates = repository.getRates(currency, MONTH);
-        LinearRegression linearRegression = getLinearRegressionFromMonth(rates);
-        LocalDate lastDate = rates.get(rates.size() - 1).getDate();
-        int dateCounter = rates.size();
-
-        while (!Objects.equals(lastDate, LocalDate.now())) {
+        while (!lastDate.equals(period.getDate())) {
             lastDate = lastDate.plusDays(1);
             dateCounter++;
+            result.add(new Rate(1, lastDate, BigDecimal.valueOf(linearRegression.predict(dateCounter)), currency));
         }
-        List<Rate> result = new ArrayList<>();
-        while (true) {
-            lastDate = lastDate.plusDays(1);
-            dateCounter++;
-            if (lastDate.equals(date)) {
-                result.add(new Rate(1, lastDate, BigDecimal.valueOf(linearRegression.predict(dateCounter)), currency));
-                return result;
-            }
-
-        }
+        if (period.isPeriod()) {
+            return result;
+        } else
+            return result.stream().sorted(Comparator.comparing(Rate::getDate).reversed()).limit(1).collect(Collectors.toList());
     }
+
 
     private LinearRegression getLinearRegressionFromMonth(List<Rate> rates) {
-        double[] onlyRates = new double[rates.size()];
-        for (int i = 0; i < rates.size(); i++) {
-            onlyRates[i] = rates.get(i).getRate().doubleValue();
-        }
-
-        double[] days = new double[rates.size()];
-        for (int i = 1; i <= rates.size(); i++) {
-            days[i - 1] = i;
-        }
-        return new LinearRegression(days, onlyRates);
+        List<Double> days = NumpyUtils.linspace(1, 30, 30);
+        return new LinearRegression(days, rates.stream().map(r -> r.getRate().doubleValue()).collect(Collectors.toList()));
     }
 
 }

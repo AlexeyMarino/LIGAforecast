@@ -1,5 +1,6 @@
 package ru.liga.controller;
 
+import ru.liga.model.Answer;
 import ru.liga.model.command.Command;
 
 /**
@@ -15,9 +16,9 @@ public class SystemController implements Controller {
 
 
     @Override
-    public Object operate() {
-        return switch (command.getCommandName()) {
-            case HELP -> """                
+    public Answer operate() {
+        return (switch (command.getName()) {
+            case HELP -> new Answer("""                
                     Cписок доступных комманд:
                         help     - помощь
                         rate     - прогноз курсов валют, с этой командой необходимо указывать валюту (USD, EUR, TRY),
@@ -25,10 +26,10 @@ public class SystemController implements Controller {
                                        параметры команды необходимо указывать через пробел (пример: rate TRY tomorrow)
                         exit     - завершение программы
                         contacts - обратная связь
-                        """;
-            case CONTACTS -> "С вопросами, пожеланиями, информацией об ошибках просьба обращаться к @MarinoSpb";
-            default -> "Упс";
-        };
+                        """);
+            case CONTACTS -> new Answer("С вопросами, пожеланиями, информацией об ошибках просьба обращаться к @MarinoSpb");
+            default -> throw new IllegalStateException("Unexpected value: " + command.getName());
+        });
     }
 
 

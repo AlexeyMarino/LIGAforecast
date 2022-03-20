@@ -1,6 +1,13 @@
 package ru.liga.model;
 
-public enum Period {
-    WEEK,
-    MONTH
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+public class Period {
+
+    private boolean period;
+    private LocalDate date;
+
 }

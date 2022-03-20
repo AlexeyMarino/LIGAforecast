@@ -1,7 +1,6 @@
 package ru.liga.utils;
 
 import ru.liga.controller.Controller;
-import ru.liga.controller.DefaultController;
 import ru.liga.controller.RateController;
 import ru.liga.controller.SystemController;
 import ru.liga.model.command.Command;
@@ -12,14 +11,13 @@ import ru.liga.repository.RatesRepository;
  *
  * @see ru.liga.App
  */
-public class ControllerSelection {
+public class ControllerFactory {
 
     public static Controller getController(Command command, RatesRepository repository) {
 
-        return switch (command.getCommandName()) {
+        return switch (command.getName()) {
             case HELP, CONTACTS -> new SystemController(command);
             case RATE -> new RateController(command, repository);
-            default -> new DefaultController(command);
         };
     }
 }
