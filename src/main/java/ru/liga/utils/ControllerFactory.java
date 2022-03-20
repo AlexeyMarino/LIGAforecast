@@ -11,6 +11,7 @@ import ru.liga.repository.RatesRepository;
  *
  * @see ru.liga.App
  */
+
 public class ControllerFactory {
 
     public static Controller getController(Command command, RatesRepository repository) {
@@ -19,5 +20,8 @@ public class ControllerFactory {
             case HELP, CONTACTS -> new SystemControllerImpl(command);
             case RATE -> new RateControllerImpl(command, repository);
         };
+    }
+
+    private ControllerFactory() {
     }
 }

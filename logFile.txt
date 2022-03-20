@@ -133,3 +133,5 @@
 17:04:19.087  5765 [LigalniyBot Telegram Executor] DEBUG c.g.s.m.builder.CompositeBuilder - .plot command: ret_21f83c60_965d_4d53_8be4_99f7561c7491 = plt.savefig("src/main/resources/graph.png",dpi=200.0)
 17:04:19.094  5772 [LigalniyBot Telegram Executor] DEBUG c.g.sh0nk.matplotlib4j.PyCommand - Commands... : [python, C:\Users\Marina\AppData\Local\Temp\1647785059091-0\exec.py]
 17:04:19.942  6620 [LigalniyBot Telegram Executor] WARN  c.g.sh0nk.matplotlib4j.PyCommand - 
+20:31:25.420  1315 [main] DEBUG r.l.r.InMemoryRatesRepositoryImpl - Информация из CSV файлов успешно загружена в InMemoryRatesRepository
+20:31:25.839  1734 [main] INFO  ru.liga.Bot - Приложение запущено. Ожидаются сообщения
