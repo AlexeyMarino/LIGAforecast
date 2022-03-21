@@ -1,5 +1,7 @@
 package ru.liga.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import ru.liga.model.*;
 import ru.liga.model.command.Command;
 import ru.liga.repository.RatesRepository;
@@ -16,14 +18,11 @@ import java.util.Map;
  * Класс контроллера обрабатывающего запросы о прогнозе курсов валют
  */
 
+@AllArgsConstructor
 public class RateControllerImpl implements Controller {
     private final Command command;
     private final RatesRepository repository;
 
-    public RateControllerImpl(Command command, RatesRepository repository) {
-        this.command = command;
-        this.repository = repository;
-    }
 
     @Override
     public Answer operate() {
@@ -37,7 +36,9 @@ public class RateControllerImpl implements Controller {
             return new LinearRegressionForecastServiceImpl(repository);
         } else if (algorithm == Algorithm.ACTUAL) {
             return new ActualAlgorithmForecastServiceImpl(repository);
-        } else return new MysticAlgorithmForecastServiceImpl(repository);
+        } else {
+            return new MysticAlgorithmForecastServiceImpl(repository);
+        }
     }
 
     private Map<Currency, List<Rate>> getRatesFromPeriod(ForecastService service, Period period) {

@@ -5,8 +5,8 @@ import ru.liga.model.Algorithm;
 import ru.liga.model.Currency;
 import ru.liga.model.Output;
 import ru.liga.model.Period;
-import ru.liga.model.command.CommandName;
-import ru.liga.utils.DateTimeUtil;
+import ru.liga.model.command.CommandNameEnum;
+import ru.liga.utils.DateTimeConstants;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class CommandValidator {
             try {
                 output = Output.valueOf(splitCommand.get(OUTPUT).toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new IllegalOutputException(ILLEGAL_OUTPUT.getMessage());
+                throw new IllegalOutputException(ILLEGAL_OUTPUT);
             }
         } else {
             output = Output.LIST;
@@ -37,17 +37,17 @@ public class CommandValidator {
         try {
             algorithm = Algorithm.valueOf(splitCommand.get(ALGORITHM).toUpperCase());
         } catch (Exception e) {
-            throw new IllegalAlgorithmException(ILLEGAL_ALGORITHM.getMessage());
+            throw new IllegalAlgorithmException(ILLEGAL_ALGORITHM);
         }
         return algorithm;
     }
 
-    public CommandName getValidateCommandName(String name) {
-        CommandName commandName;
+    public CommandNameEnum getValidateCommandName(String name) {
+        CommandNameEnum commandName;
         try {
-            commandName = CommandName.valueOf(name.toUpperCase());
+            commandName = CommandNameEnum.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
+            throw new InvalidCommandException(INVALID_COMMAND);
         }
         return commandName;
     }
@@ -61,7 +61,7 @@ public class CommandValidator {
                 currencies.add(Currency.valueOf(splitCurrency.toUpperCase()));
             }
         } catch (IllegalArgumentException e) {
-            throw new IllegalCurrencyTitleException(ILLEGAL_CURRENCY.getMessage());
+            throw new IllegalCurrencyTitleException(ILLEGAL_CURRENCY);
         }
         return currencies;
     }
@@ -70,7 +70,7 @@ public class CommandValidator {
         Period period = new Period();
 
         if (splitCommand.containsKey(PERIOD) && splitCommand.containsKey(DATE))
-            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
+            throw new InvalidCommandException(INVALID_COMMAND);
 
         if (splitCommand.containsKey(PERIOD)) {
             switch (splitCommand.get(PERIOD).toLowerCase()) {
@@ -82,7 +82,7 @@ public class CommandValidator {
                     period.setDate(LocalDate.now().plusDays(7));
                     period.setPeriod(true);
                 }
-                default -> throw new IllegalPeriodException(ILLEGAL_PERIOD.getMessage());
+                default -> throw new IllegalPeriodException(ILLEGAL_PERIOD);
             }
         } else if (splitCommand.containsKey(DATE)) {
             if (splitCommand.get(DATE).equalsIgnoreCase(TOMORROW)) {
@@ -90,14 +90,14 @@ public class CommandValidator {
                 period.setPeriod(false);
             } else {
                 try {
-                    period.setDate(LocalDate.parse(splitCommand.get(DATE), DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY));
+                    period.setDate(LocalDate.parse(splitCommand.get(DATE), DateTimeConstants.PARSE_DATE_FORMATTER_FROM_CSV));
                     period.setPeriod(false);
                 } catch (Exception e) {
-                    throw new IllegalDateException(ILLEGAL_DATE.getMessage());
+                    throw new IllegalDateException(ILLEGAL_DATE);
                 }
             }
         } else {
-            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
+            throw new InvalidCommandException(INVALID_COMMAND);
         }
         return period;
     }

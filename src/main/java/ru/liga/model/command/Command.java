@@ -14,13 +14,13 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 public class Command {
-    private CommandName name;
+    private CommandNameEnum name;
     private List<Currency> currency;
     private Period period;
     private Algorithm algorithm;
     private Output output;
 
-    public Command(CommandName name) {
+    public Command(CommandNameEnum name) {
         this.name = name;
     }
 }

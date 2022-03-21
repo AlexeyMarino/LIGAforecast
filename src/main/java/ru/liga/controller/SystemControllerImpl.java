@@ -1,19 +1,15 @@
 package ru.liga.controller;
 
+import lombok.AllArgsConstructor;
 import ru.liga.model.Answer;
 import ru.liga.model.command.Command;
 
 /**
  * Класс контроллера обрабатывающий команды системного характера
  */
-
+@AllArgsConstructor
 public class SystemControllerImpl implements Controller {
     private final Command command;
-
-    public SystemControllerImpl(Command command) {
-        this.command = command;
-    }
-
 
     @Override
     public Answer operate() {

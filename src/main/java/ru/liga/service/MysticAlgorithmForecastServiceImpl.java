@@ -6,7 +6,7 @@ import ru.liga.model.Currency;
 import ru.liga.model.Period;
 import ru.liga.model.Rate;
 import ru.liga.repository.RatesRepository;
-import ru.liga.utils.DateTimeUtil;
+import ru.liga.utils.DateTimeConstants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,9 +21,9 @@ public class MysticAlgorithmForecastServiceImpl implements ForecastService {
     @NonNull
     private final RatesRepository repository;
 
-    private final LocalDate FIRST_MOON_DATE = LocalDate.parse("19.12.2021", DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
-    private final LocalDate SECOND_MOON_DATE = LocalDate.parse("18.01.2022", DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
-    private final LocalDate THIRD_MOON_DATE = LocalDate.parse("16.02.2022", DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
+    private final LocalDate FIRST_MOON_DATE = LocalDate.of(2021, 12, 19);
+    private final LocalDate SECOND_MOON_DATE = LocalDate.of(2022, 1, 18);
+    private final LocalDate THIRD_MOON_DATE = LocalDate.of(2022, 2, 16);
 
     @Override
     public List<Rate> getRates(Currency currency, Period period) {
@@ -75,7 +75,7 @@ public class MysticAlgorithmForecastServiceImpl implements ForecastService {
 
     private Double addPercentageToNumber(double number, int percentage) {
         int FOR_PERCENT = 100;
-        number = number + ((number * percentage) / FOR_PERCENT);
+        number += ((number * percentage) / FOR_PERCENT);
         return number;
     }
 

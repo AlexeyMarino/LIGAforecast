@@ -15,7 +15,6 @@ import ru.liga.utils.ControllerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ class ActualAlgorithmForecastServiceImplTest {
     @Test
     void whenTargetIsTomorrowThenRateIs200() {
         String commandString = "rate USD -date tomorrow -alg actual";
-        Command command = new CommandBuilder().buildCommand(new CommandParser().parse(commandString));
+        Command command = new CommandBuilder().build(new CommandParser().parse(commandString));
         Controller controller = ControllerFactory.getController(command, repository);
         Answer operate = controller.operate();
         assertThat(operate.getRatesMap().get(Currency.USD).get(0).getRate().doubleValue()).isEqualTo(200d);

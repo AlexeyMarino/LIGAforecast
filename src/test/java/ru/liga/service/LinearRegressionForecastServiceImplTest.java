@@ -36,7 +36,7 @@ class LinearRegressionForecastServiceImplTest {
     @Test
     void whenTargetIsTomorrowThenRateIs31() {
         String commandString = "rate USD -date tomorrow -alg lr";
-        Command command = new CommandBuilder().buildCommand(new CommandParser().parse(commandString));
+        Command command = new CommandBuilder().build(new CommandParser().parse(commandString));
         Controller controller = ControllerFactory.getController(command, repository);
         Answer operate = controller.operate();
         assertThat(operate.getRatesMap().get(Currency.USD).get(0).getRate().doubleValue()).isEqualTo(31d);

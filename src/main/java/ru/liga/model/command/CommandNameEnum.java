@@ -1,6 +1,6 @@
 package ru.liga.model.command;
 
-public enum CommandName {
+public enum CommandNameEnum {
     RATE,
     HELP,
     CONTACTS

@@ -1,6 +1,5 @@
 package ru.liga;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -18,6 +17,7 @@ import ru.liga.utils.CommandBuilder;
 import ru.liga.utils.CommandParser;
 import ru.liga.utils.ControllerFactory;
 import ru.liga.view.TelegramViewImpl;
+import ru.liga.view.View;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -27,9 +27,21 @@ import static ru.liga.exception.ExceptionMessage.INTERNAL_ERROR;
 @Slf4j
 public class Bot extends TelegramLongPollingBot {
     private final RatesRepository repository = new InMemoryRatesRepositoryImpl();
-    @Getter
-    private final TelegramViewImpl view = new TelegramViewImpl(this);
+    private final View view = new TelegramViewImpl(this);
+    private final String BOT_NAME;
+    private final String BOT_TOKEN;
 
+    public Bot() {
+        super();
+        Properties prop = new Properties();
+        try {
+            prop.load(App.class.getClassLoader().getResourceAsStream("config.properties"));
+        } catch (IOException ex) {
+            log.debug("Ошибка получения имени или токена бота " + ex.getMessage());
+        }
+        this.BOT_NAME = prop.getProperty("userName");
+        this.BOT_TOKEN = prop.getProperty("token");
+    }
 
     public void connectApi() {
         try {
@@ -47,7 +59,7 @@ public class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         Long chatId = message.getChatId();
         try {
-            Command command = new CommandBuilder().buildCommand(new CommandParser().parse(message.getText()));
+            Command command = new CommandBuilder().build(new CommandParser().parse(message.getText()));
             Controller controller = ControllerFactory.getController(command, repository);
             Answer answer = controller.operate();
             view.printMessage(answer, chatId, command);
@@ -56,28 +68,16 @@ public class Bot extends TelegramLongPollingBot {
             view.sendText(e.getMessage(), chatId);
         } catch (Exception ex) {
             log.debug("ERROR: " + ex.getMessage());
-            view.sendText(INTERNAL_ERROR.getMessage(), chatId);
+            view.sendText(INTERNAL_ERROR, chatId);
         }
     }
 
 
     public String getBotUsername() {
-        Properties prop = new Properties();
-        try {
-            prop.load(App.class.getClassLoader().getResourceAsStream("config.properties"));
-        } catch (IOException ex) {
-            log.debug("Ошибка получения имени бота " + ex.getMessage());
-        }
-        return prop.getProperty("userName");
+        return BOT_NAME;
     }
 
     public String getBotToken() {
-        Properties prop = new Properties();
-        try {
-            prop.load(App.class.getClassLoader().getResourceAsStream("config.properties"));
-        } catch (IOException ex) {
-            log.debug("Ошибка получения имени бота " + ex.getMessage());
-        }
-        return prop.getProperty("token");
+        return BOT_TOKEN;
     }
 }

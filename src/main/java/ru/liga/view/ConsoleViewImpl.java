@@ -4,7 +4,7 @@ import ru.liga.model.Answer;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
-import ru.liga.utils.DateTimeUtil;
+import ru.liga.utils.DateTimeConstants;
 
 import java.util.List;
 import java.util.Map;
@@ -29,13 +29,18 @@ public class ConsoleViewImpl implements View {
         } else printRates(answer.getRatesMap());
     }
 
+    @Override
+    public void sendText(String answer, Long chatId) {
+
+    }
+
     public void printMessage(String text) {
         System.out.println(text);
     }
 
 
     private void printDayRate(Rate rate) {
-        printMessage(String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_DATE_FORMATTER_E_DD_MM_YYYY), String.format("%.2f", rate.getRate())));
+        printMessage(String.format("%s - %s", rate.getDate().format(DateTimeConstants.PRINT_DATE_FORMATTER_TO_VIEW), String.format("%.2f", rate.getRate())));
     }
 
 

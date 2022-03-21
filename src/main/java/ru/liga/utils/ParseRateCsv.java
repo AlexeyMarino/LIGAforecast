@@ -5,7 +5,6 @@ import ru.liga.model.Rate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,11 +27,10 @@ public class ParseRateCsv {
     private static final String CDX = "cdx";
     private static final String DELIMITER = ";";
 
-    public static List<Rate> parse(String filePath) throws IOException, ParseException {
+    public static List<Rate> readCsvParseLinesToRatesList(String filePath) throws IOException, ParseException {
         //Загружаем строки из файла
         List<String> fileLines;
-        try (InputStream in = ParseRateCsv.class.getResourceAsStream(filePath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(in)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ParseRateCsv.class.getResourceAsStream(filePath))))) {
             fileLines = reader.lines().toList();
         }
         LocalDate lastDate = null;
@@ -51,7 +49,7 @@ public class ParseRateCsv {
 
             //Создаем сущности на основе полученной информации
             int currentNominal = Integer.parseInt(columnList.get(nominal).replace(".", ""));
-            LocalDate currentDate = LocalDate.parse(columnList.get(data), DateTimeUtil.PARSE_DATE_FORMATTER_DD_MM_YYYY);
+            LocalDate currentDate = LocalDate.parse(columnList.get(data), DateTimeConstants.PARSE_DATE_FORMATTER_FROM_CSV);
             String stringRate = columnList.get(curs).replace("\"", "");
             BigDecimal currentRate = BigDecimal.valueOf(NumberFormat.getInstance().parse(stringRate).doubleValue());
             // нормализация курса-номинала

@@ -15,7 +15,7 @@ import ru.liga.model.Answer;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
-import ru.liga.utils.DateTimeUtil;
+import ru.liga.utils.DateTimeConstants;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +27,10 @@ import static ru.liga.exception.ExceptionMessage.PLOTTING_ERROR;
 @AllArgsConstructor
 public class TelegramViewImpl implements View {
     private final Bot bot;
+    private final String FILE_PATH = "src/main/resources/graph.png";
+    private final String FILE_PATH_NAME = "/graph.png";
+    private final String FILE_NAME = "Graph";
+
 
     @Override
     public void printMessage(Answer answer, Long chatId, Command command) {
@@ -34,9 +38,12 @@ public class TelegramViewImpl implements View {
             sendText(answer.getText(), chatId);
         } else if (answer.isOutputGraph()) {
             sendPhoto(getGraph(answer.getRatesMap()), chatId);
-        } else sendText(printRates(answer.getRatesMap()), chatId);
+        } else {
+            sendText(printRates(answer.getRatesMap()), chatId);
+        }
     }
 
+    @Override
     public void sendText(String answer, Long chatId) {
         SendMessage message = new SendMessage();
         message.setText(answer);
@@ -48,9 +55,9 @@ public class TelegramViewImpl implements View {
         }
     }
 
-    public void sendPhoto(String fileName, Long chatId) {
+    private void sendPhoto(String fileName, Long chatId) {
         SendPhoto photo = new SendPhoto();
-        photo.setPhoto(new InputFile(TelegramViewImpl.class.getResourceAsStream(fileName), "Graph"));
+        photo.setPhoto(new InputFile(TelegramViewImpl.class.getResourceAsStream(fileName), FILE_NAME));
         photo.setChatId(chatId.toString());
         try {
             bot.execute(photo);
@@ -60,7 +67,7 @@ public class TelegramViewImpl implements View {
     }
 
     private String printDayRate(Rate rate) {
-        return String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_DATE_FORMATTER_E_DD_MM_YYYY), String.format("%.2f", rate.getRate()));
+        return String.format("%s - %s", rate.getDate().format(DateTimeConstants.PRINT_DATE_FORMATTER_TO_VIEW), String.format("%.2f", rate.getRate()));
     }
 
     private String printRates(Map<Currency, List<Rate>> ratesMap) {
@@ -73,7 +80,7 @@ public class TelegramViewImpl implements View {
         return ratesString.toString();
     }
 
-    public String getGraph(Map<Currency, List<Rate>> ratesMap) {
+    private String getGraph(Map<Currency, List<Rate>> ratesMap) {
 
         int days = ratesMap.values().stream().findFirst().get().size();
 
@@ -87,15 +94,15 @@ public class TelegramViewImpl implements View {
         //  plt.title();
         plt.xlabel("Дата");
         plt.ylabel("Курс валюты");
-        plt.savefig("src/main/resources/graph.png").dpi(200);
+        plt.savefig(FILE_PATH).dpi(200);
         try {
             plt.executeSilently();
         } catch (IOException | PythonExecutionException e) {
             log.debug(PLOTTING_ERROR + e.getMessage());
-            throw new PlottingException(PLOTTING_ERROR.getMessage());
+            throw new PlottingException(PLOTTING_ERROR);
         }
 
-        return "/graph.png";
+        return FILE_PATH_NAME;
     }
 
 

@@ -26,13 +26,13 @@ public class InMemoryRatesRepositoryImpl implements RatesRepository {
 
     static {
         try {
-            repository.put(Currency.USD, ParseRateCsv.parse("/USD_F01_02_2005_T05_03_2022.csv"));
-            repository.put(Currency.EUR, ParseRateCsv.parse("/EUR_F01_02_2005_T05_03_2022.csv"));
-            repository.put(Currency.TRY, ParseRateCsv.parse("/TRY_F01_02_2005_T05_03_2022.csv"));
-            repository.put(Currency.AMD, ParseRateCsv.parse("/AMD_F01_02_2005_T05_03_2022.csv"));
-            repository.put(Currency.BGN, ParseRateCsv.parse("/BGN_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.USD, ParseRateCsv.readCsvParseLinesToRatesList("/USD_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.EUR, ParseRateCsv.readCsvParseLinesToRatesList("/EUR_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.TRY, ParseRateCsv.readCsvParseLinesToRatesList("/TRY_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.AMD, ParseRateCsv.readCsvParseLinesToRatesList("/AMD_F01_02_2005_T05_03_2022.csv"));
+            repository.put(Currency.BGN, ParseRateCsv.readCsvParseLinesToRatesList("/BGN_F01_02_2005_T05_03_2022.csv"));
         } catch (Exception e) {
-            throw new CsvParseException(CSV_PARSE_ERROR.getMessage());
+            throw new CsvParseException(CSV_PARSE_ERROR);
         }
         log.debug("Информация из CSV файлов успешно загружена в InMemoryRatesRepository");
 
