@@ -1,6 +1,6 @@
 package ru.liga.exception;
 
-public class BaseException extends RuntimeException {
+public abstract class BaseException extends RuntimeException {
     public BaseException(String s) {
         super(s);
     }

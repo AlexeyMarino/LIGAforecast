@@ -14,15 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-public class ActualAlgorithmService implements ForecastService {
+public class ActualAlgorithmForecastServiceImpl implements ForecastService {
     private final RatesRepository repository;
+
 
     @Override
     public List<Rate> getRates(Currency currency, Period period) {
         int THREE_YEARS = 1095;
         List<Rate> rates = repository.getRates(currency, THREE_YEARS);
         if (period.getDate().isAfter(rates.get(rates.size() - 1).getDate().plusYears(2))) {
-            throw new IllegalDateException(ExceptionMessage.ILLEGAL_DATE_FROM_ACTUAL.getMessage() + rates.get(rates.size() - 1).getDate());
+            throw new IllegalDateException(ExceptionMessage.ILLEGAL_DATE_FROM_ACTUAL + rates.get(rates.size() - 1).getDate());
         }
         List<Rate> resultRates = new ArrayList<>();
         if (period.isPeriod()) {
@@ -38,9 +39,8 @@ public class ActualAlgorithmService implements ForecastService {
     }
 
     private Rate getDateRate(List<Rate> rates, LocalDate date, Currency currency) {
-
         BigDecimal dateRateOneYearBefore = rates.stream().filter(rate -> rate.getDate().equals(date.minusYears(1))).findFirst().get().getRate();
-        BigDecimal dateRateTwoYearBefore = rates.stream().filter(rate -> rate.getDate().equals(date.minusYears(1))).findFirst().get().getRate();
-        return new Rate(rates.get(rates.size() - 1).getNominal(), date, dateRateOneYearBefore.add(dateRateTwoYearBefore), currency);
+        BigDecimal dateRateTwoYearBefore = rates.stream().filter(rate -> rate.getDate().equals(date.minusYears(2))).findFirst().get().getRate();
+        return new Rate(date, dateRateOneYearBefore.add(dateRateTwoYearBefore), currency);
     }
 }

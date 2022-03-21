@@ -1,7 +1,6 @@
 package ru.liga.utils;
 
 import org.junit.jupiter.api.Test;
-import ru.liga.exception.ExceptionMessage;
 import ru.liga.exception.IllegalOutputException;
 import ru.liga.exception.InvalidCommandException;
 import ru.liga.model.Algorithm;
@@ -9,7 +8,7 @@ import ru.liga.model.Currency;
 import ru.liga.model.Output;
 import ru.liga.model.Period;
 import ru.liga.model.command.Command;
-import ru.liga.model.command.CommandName;
+import ru.liga.model.command.CommandNameEnum;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -17,6 +16,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static ru.liga.exception.ExceptionMessage.ILLEGAL_LIST_OUTPUT;
+import static ru.liga.exception.ExceptionMessage.INVALID_COMMAND;
 
 class CommandBuilderTest {
     CommandParser parser = new CommandParser();
@@ -32,13 +33,13 @@ class CommandBuilderTest {
         //assert
         assertThatThrownBy(() -> parser.parse(inputString))
                 .isExactlyInstanceOf(InvalidCommandException.class)
-                .hasMessage(ExceptionMessage.INVALID_COMMAND.getMessage());
+                .hasMessage(INVALID_COMMAND);
     }
 
     @Test
     void whenInputIsCorrectThenValidCommand() {
         String inputString = "rate USD -period week -alg lr -output list";
-        CommandName expectedCommandName = CommandName.RATE;
+        CommandNameEnum expectedCommandName = CommandNameEnum.RATE;
         List<Currency> expectedCurrencies = Collections.singletonList(Currency.USD);
         Period expectedPeriod = new Period();
         expectedPeriod.setPeriod(true);
@@ -46,7 +47,7 @@ class CommandBuilderTest {
         Algorithm expectedAlgorithm = Algorithm.LR;
         Output expectedOutput = Output.LIST;
 
-        Command command = builder.buildCommand(parser.parse(inputString));
+        Command command = builder.build(parser.parse(inputString));
 
         assertThat(command.getName()).isEqualTo(expectedCommandName);
         assertThat(command.getCurrency()).isEqualTo(expectedCurrencies);
@@ -59,9 +60,9 @@ class CommandBuilderTest {
     void whenInputHasTwoCurrenciesAndNoGraphOutputThenIllegalOutputException() {
         String inputString = "rate USD,EUR -period week -alg lr -output list";
 
-        assertThatThrownBy(() -> builder.buildCommand(parser.parse(inputString)))
+        assertThatThrownBy(() -> builder.build(parser.parse(inputString)))
                 .isExactlyInstanceOf(IllegalOutputException.class)
-                .hasMessage(ExceptionMessage.ILLEGAL_LIST_OUTPUT.getMessage());
+                .hasMessage(ILLEGAL_LIST_OUTPUT);
     }
 
 }

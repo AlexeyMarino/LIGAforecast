@@ -4,38 +4,33 @@ import com.github.sh0nk.matplotlib4j.NumpyUtils;
 import com.github.sh0nk.matplotlib4j.Plot;
 import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.liga.Bot;
+import ru.liga.exception.PlottingException;
 import ru.liga.model.Answer;
 import ru.liga.model.Currency;
 import ru.liga.model.Rate;
 import ru.liga.model.command.Command;
-import ru.liga.utils.DateTimeUtil;
+import ru.liga.utils.DateTimeConstants;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@AllArgsConstructor
-public class TelegramView implements View {
-    private final Bot bot;
+import static ru.liga.exception.ExceptionMessage.PLOTTING_ERROR;
 
-    public Message getMessage() {
-        Update update = null;
-        try {
-            update = (Update) bot.getReceiveQueue().take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        assert update != null;
-        return update.getMessage();
-    }
+@Slf4j
+@AllArgsConstructor
+public class TelegramViewImpl implements View {
+    private final Bot bot;
+    private final String FILE_PATH = "src/main/resources/graph.png";
+    private final String FILE_PATH_NAME = "/graph.png";
+    private final String FILE_NAME = "Graph";
+
 
     @Override
     public void printMessage(Answer answer, Long chatId, Command command) {
@@ -43,9 +38,12 @@ public class TelegramView implements View {
             sendText(answer.getText(), chatId);
         } else if (answer.isOutputGraph()) {
             sendPhoto(getGraph(answer.getRatesMap()), chatId);
-        } else sendText(printRates(answer.getRatesMap()), chatId);
+        } else {
+            sendText(printRates(answer.getRatesMap()), chatId);
+        }
     }
 
+    @Override
     public void sendText(String answer, Long chatId) {
         SendMessage message = new SendMessage();
         message.setText(answer);
@@ -53,23 +51,23 @@ public class TelegramView implements View {
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
-            //логируем сбой Telegram Bot API, используя userName !!!!!
+            log.debug("Не удалось отправить сообщение: " + e.getMessage());
         }
     }
 
-    public void sendPhoto(File file, Long chatId) {
+    private void sendPhoto(String fileName, Long chatId) {
         SendPhoto photo = new SendPhoto();
-        photo.setPhoto(new InputFile(file, "Graph"));
+        photo.setPhoto(new InputFile(TelegramViewImpl.class.getResourceAsStream(fileName), FILE_NAME));
         photo.setChatId(chatId.toString());
         try {
             bot.execute(photo);
         } catch (TelegramApiException e) {
-            //логируем сбой Telegram Bot API, используя userName !!!!!
+            log.debug("Не удалось отправить график: " + e.getMessage());
         }
     }
 
     private String printDayRate(Rate rate) {
-        return String.format("%s - %s", rate.getDate().format(DateTimeUtil.PRINT_FORMATTER), String.format("%.2f", rate.getRate()));
+        return String.format("%s - %s", rate.getDate().format(DateTimeConstants.PRINT_DATE_FORMATTER_TO_VIEW), String.format("%.2f", rate.getRate()));
     }
 
     private String printRates(Map<Currency, List<Rate>> ratesMap) {
@@ -82,7 +80,7 @@ public class TelegramView implements View {
         return ratesString.toString();
     }
 
-    public File getGraph(Map<Currency, List<Rate>> ratesMap) {
+    private String getGraph(Map<Currency, List<Rate>> ratesMap) {
 
         int days = ratesMap.values().stream().findFirst().get().size();
 
@@ -93,20 +91,19 @@ public class TelegramView implements View {
                     .map(r -> r.getRate().doubleValue()).toList();
             plt.plot().add(x, rates);
         }
-       //  plt.title();
+        //  plt.title();
         plt.xlabel("Дата");
         plt.ylabel("Курс валюты");
-        plt.savefig("src/main/resources/graph.png").dpi(200);
+        plt.savefig(FILE_PATH).dpi(200);
         try {
             plt.executeSilently();
         } catch (IOException | PythonExecutionException e) {
-            e.printStackTrace();
+            log.debug(PLOTTING_ERROR + e.getMessage());
+            throw new PlottingException(PLOTTING_ERROR);
         }
-        return new File("src/main/resources/graph.png");
+
+        return FILE_PATH_NAME;
     }
-
-
-
 
 
 }

@@ -5,23 +5,29 @@ import ru.liga.model.Algorithm;
 import ru.liga.model.Currency;
 import ru.liga.model.Output;
 import ru.liga.model.Period;
-import ru.liga.model.command.CommandName;
-import ru.liga.utils.DateTimeUtil;
+import ru.liga.model.command.CommandNameEnum;
+import ru.liga.utils.DateTimeConstants;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static ru.liga.exception.ExceptionMessage.*;
+import static ru.liga.model.command.CommandParameters.*;
 
 public class CommandValidator {
     public Output getValidateOutput(Map<String, String> splitCommand) {
-        Output output = null;
-        if (splitCommand.containsKey("-output")) {
+        Output output;
+        if (splitCommand.containsKey(OUTPUT)) {
             try {
-                output = Output.valueOf(splitCommand.get("-output").toUpperCase(Locale.ROOT));
+                output = Output.valueOf(splitCommand.get(OUTPUT).toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new IllegalOutputException(ILLEGAL_OUTPUT.getMessage());
+                throw new IllegalOutputException(ILLEGAL_OUTPUT);
             }
+        } else {
+            output = Output.LIST;
         }
         return output;
     }
@@ -29,19 +35,19 @@ public class CommandValidator {
     public Algorithm getValidateAlgorithm(Map<String, String> splitCommand) {
         Algorithm algorithm;
         try {
-            algorithm = Algorithm.valueOf(splitCommand.get("-alg").toUpperCase(Locale.ROOT));
+            algorithm = Algorithm.valueOf(splitCommand.get(ALGORITHM).toUpperCase());
         } catch (Exception e) {
-            throw new IllegalAlgorithmException(ILLEGAL_ALGORITHM.getMessage());
+            throw new IllegalAlgorithmException(ILLEGAL_ALGORITHM);
         }
         return algorithm;
     }
 
-    public CommandName getValidateCommandName(String name) {
-        CommandName commandName;
+    public CommandNameEnum getValidateCommandName(String name) {
+        CommandNameEnum commandName;
         try {
-            commandName = CommandName.valueOf(name.toUpperCase(Locale.ROOT));
+            commandName = CommandNameEnum.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
+            throw new InvalidCommandException(INVALID_COMMAND);
         }
         return commandName;
     }
@@ -52,48 +58,47 @@ public class CommandValidator {
 
         try {
             for (String splitCurrency : splitCurrencies) {
-                currencies.add(Currency.valueOf(splitCurrency.toUpperCase(Locale.ROOT)));
+                currencies.add(Currency.valueOf(splitCurrency.toUpperCase()));
             }
         } catch (IllegalArgumentException e) {
-            throw new IllegalCurrencyTitleException(ILLEGAL_CURRENCY.getMessage());
+            throw new IllegalCurrencyTitleException(ILLEGAL_CURRENCY);
         }
-
         return currencies;
     }
 
     public Period getValidatePeriod(Map<String, String> splitCommand) {
         Period period = new Period();
 
-        if (splitCommand.containsKey("-period") && splitCommand.containsKey("-date"))
-            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
+        if (splitCommand.containsKey(PERIOD) && splitCommand.containsKey(DATE))
+            throw new InvalidCommandException(INVALID_COMMAND);
 
-        if (splitCommand.containsKey("-period")) {
-            switch (splitCommand.get("-period").toLowerCase(Locale.ROOT)) {
-                case "month" -> {
+        if (splitCommand.containsKey(PERIOD)) {
+            switch (splitCommand.get(PERIOD).toLowerCase()) {
+                case MONTH -> {
                     period.setDate(LocalDate.now().plusDays(30));
                     period.setPeriod(true);
                 }
-                case "week" -> {
+                case WEEK -> {
                     period.setDate(LocalDate.now().plusDays(7));
                     period.setPeriod(true);
                 }
-                default -> throw new IllegalPeriodException(ILLEGAL_PERIOD.getMessage());
+                default -> throw new IllegalPeriodException(ILLEGAL_PERIOD);
             }
-        } else if (splitCommand.containsKey("-date")) {
-            if (splitCommand.get("-date").equalsIgnoreCase("tomorrow")) {
+        } else if (splitCommand.containsKey(DATE)) {
+            if (splitCommand.get(DATE).equalsIgnoreCase(TOMORROW)) {
                 period.setDate(LocalDate.now().plusDays(1));
                 period.setPeriod(false);
             } else {
                 try {
-                    period.setDate(LocalDate.parse(splitCommand.get("-date"), DateTimeUtil.PARSE_FORMATTER));
+                    period.setDate(LocalDate.parse(splitCommand.get(DATE), DateTimeConstants.PARSE_DATE_FORMATTER_FROM_CSV));
                     period.setPeriod(false);
                 } catch (Exception e) {
-                    throw new IllegalDateException(ILLEGAL_DATE.getMessage());
+                    throw new IllegalDateException(ILLEGAL_DATE);
                 }
             }
-        } else
-            throw new InvalidCommandException(INVALID_COMMAND.getMessage());
-
+        } else {
+            throw new InvalidCommandException(INVALID_COMMAND);
+        }
         return period;
     }
 }

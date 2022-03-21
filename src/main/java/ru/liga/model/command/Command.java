@@ -2,7 +2,6 @@ package ru.liga.model.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import ru.liga.model.Algorithm;
 import ru.liga.model.Currency;
@@ -15,13 +14,13 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 public class Command {
-    private CommandName name;
+    private CommandNameEnum name;
     private List<Currency> currency;
     private Period period;
     private Algorithm algorithm;
     private Output output;
 
-    public Command(CommandName name) {
+    public Command(CommandNameEnum name) {
         this.name = name;
     }
 }

@@ -1,6 +1,9 @@
 package ru.liga.model;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,7 +12,7 @@ import java.time.LocalDate;
  * Класс описывоющий модель объекта Rate, хранящего информацию о курсе валюты в определенную дату
  */
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @ToString
@@ -19,4 +22,12 @@ public class Rate {
     private LocalDate date;
     private BigDecimal rate;
     private Currency currency;
+
+    public Rate(LocalDate date, BigDecimal rate, Currency currency) {
+        this.date = date;
+        this.rate = rate;
+        this.currency = currency;
+        this.nominal = 1;
+    }
 }
+

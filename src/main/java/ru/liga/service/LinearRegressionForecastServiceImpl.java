@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class LinearRegressionForecastService implements ForecastService {
+public class LinearRegressionForecastServiceImpl implements ForecastService {
     @NonNull
     private final RatesRepository repository;
     private final int MONTH = 30;
@@ -39,7 +39,7 @@ public class LinearRegressionForecastService implements ForecastService {
         while (!lastDate.equals(period.getDate())) {
             lastDate = lastDate.plusDays(1);
             dateCounter++;
-            result.add(new Rate(1, lastDate, BigDecimal.valueOf(linearRegression.predict(dateCounter)), currency));
+            result.add(new Rate(lastDate, BigDecimal.valueOf(linearRegression.predict(dateCounter)), currency));
         }
         if (period.isPeriod()) {
             return result;
